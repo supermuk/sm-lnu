@@ -62,6 +62,7 @@ namespace _4M_Task_3
             CalcCoefsABC();
 
             calcCoefsLD();
+            //yk.Add(0.1667);
             yk.Add((h * B + b1 * dk[n - 1]) / (b1 - b1 * lk[n - 1] + b0 * h));
             //yk.Add((h * B + dk[n - 1]) / (h * b0 + b1 * lk[n - 1]));
             for (int i = n - 1; i >= 0; i--)
