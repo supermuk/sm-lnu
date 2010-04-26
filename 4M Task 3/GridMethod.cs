@@ -99,9 +99,18 @@ namespace _4M_Task_3
         }
         private void printResults()
         {
+            int r = 3;
             for (int i = 0; i <= n; i++)
             {
-                DataView.Rows.Add(i, xk[i], Ak[i], Bk[i], Ck[i], Fk[i], lk[i], dk[i], yk[i]);
+                DataView.Rows.Add(i,
+                    Math.Round(xk[i], r),
+                    Math.Round(Ak[i], r),
+                    Math.Round(Bk[i], r),
+                    Math.Round(Ck[i], r),
+                    Math.Round(Fk[i], r),
+                    Math.Round(lk[i], r),
+                    Math.Round(dk[i], r),
+                    Math.Round(yk[i], r));
             }
         }
     }
