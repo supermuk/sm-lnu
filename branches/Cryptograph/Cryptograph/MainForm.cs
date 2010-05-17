@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Cryptograph
 {
@@ -116,6 +117,24 @@ namespace Cryptograph
         {
             AnalizerForm af = new AnalizerForm();
             af.Show();
+        }
+
+        private void textBox_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+            {
+                StreamReader sr = new StreamReader(file);
+                (sender as TextBox).Text += sr.ReadToEnd();
+            }
+        }
+
+        private void textBox_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+            {
+                e.Effect = DragDropEffects.All;
+            }
         }
 
     }

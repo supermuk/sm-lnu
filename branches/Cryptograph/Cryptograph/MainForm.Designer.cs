@@ -76,7 +76,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.groupBox3);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(984, 564);
+            this.splitContainer1.Size = new System.Drawing.Size(984, 582);
             this.splitContainer1.SplitterDistance = 598;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 0;
@@ -133,6 +133,7 @@
             // 
             // textBox3
             // 
+            this.textBox3.AllowDrop = true;
             this.textBox3.Location = new System.Drawing.Point(18, 414);
             this.textBox3.Margin = new System.Windows.Forms.Padding(5, 2, 5, 2);
             this.textBox3.Multiline = true;
@@ -140,9 +141,12 @@
             this.textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox3.Size = new System.Drawing.Size(500, 150);
             this.textBox3.TabIndex = 2;
+            this.textBox3.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox_DragDrop);
+            this.textBox3.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox_DragEnter);
             // 
             // textBox2
             // 
+            this.textBox2.AllowDrop = true;
             this.textBox2.Location = new System.Drawing.Point(14, 215);
             this.textBox2.Margin = new System.Windows.Forms.Padding(5, 2, 5, 2);
             this.textBox2.Multiline = true;
@@ -150,9 +154,12 @@
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox2.Size = new System.Drawing.Size(500, 150);
             this.textBox2.TabIndex = 1;
+            this.textBox2.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox_DragDrop);
+            this.textBox2.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox_DragEnter);
             // 
             // textBox1
             // 
+            this.textBox1.AllowDrop = true;
             this.textBox1.Location = new System.Drawing.Point(18, 27);
             this.textBox1.Margin = new System.Windows.Forms.Padding(5, 2, 5, 2);
             this.textBox1.Multiline = true;
@@ -160,6 +167,8 @@
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(500, 150);
             this.textBox1.TabIndex = 0;
+            this.textBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox_DragDrop);
+            this.textBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox_DragEnter);
             // 
             // groupBox3
             // 
@@ -279,12 +288,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 564);
+            this.ClientSize = new System.Drawing.Size(984, 582);
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Verdana", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Margin = new System.Windows.Forms.Padding(5, 2, 5, 2);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Криптограф © Орест Михайлович 2010";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
