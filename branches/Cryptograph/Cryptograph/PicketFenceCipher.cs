@@ -28,6 +28,7 @@ namespace Cryptograph
             key.Name = "PicketFenceCipherKey";
             key.Minimum = -100;
             key.Maximum = 100;
+            key.Value = 1;
             key.Top = 20;
             key.Left = 20;
             KeyBox.Controls.Add(key);

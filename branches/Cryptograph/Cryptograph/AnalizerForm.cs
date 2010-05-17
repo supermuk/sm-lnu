@@ -182,5 +182,6 @@ namespace Cryptograph
         {
             alphabet = Alphabets.Ukrainian;
         }
+
     }
 }
