@@ -46,7 +46,7 @@ namespace Cryptograph
     {
         [StringValue(" abcdefghijklmnopqrstuvwxyz")]
         Latin,
-        [StringValue(" абвгґдеєжзиіїйклмнопрстуфхчшщьюя")]
+        [StringValue(" абвгґдеєжзиіїйклмнопрстуфхцчшщьюя")]
         Ukrainian
     }
 }
