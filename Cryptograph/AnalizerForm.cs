@@ -110,51 +110,6 @@ namespace Cryptograph
 
             label6.Text = letterCount.ToString();
 
-
-            Dictionary<string, double> letterPairDic = new Dictionary<string, double>();
-            foreach (string word in wordDic.Keys)
-            {
-                string prev = " ";
-                string next;
-                for (int i = 0; i <= word.Length; i++)
-                {
-                    if (i < word.Length)
-                    {
-                        next = word[i].ToString();
-                    }
-                    else
-                    {
-                        next = " ";
-                    }
-                    if (letterPairDic.Keys.Contains(prev + next))
-                    {
-                        letterPairDic[prev + next]+= wordDic[word];
-                    }
-                    else
-                    {
-                        letterPairDic[prev + next] = wordDic[word];
-                    }
-                    prev = next;
-                }
-
-                List<string> keys2 = new List<string>();
-                keys2.AddRange(letterPairDic.Keys.ToList());
-                foreach (string key in keys2)
-                {
-                    letterPairDic[key] = Math.Round(letterPairDic[key] * 100 / letterCount, 7);
-                }
-                List<KeyValuePair<string, double>> letterPairSource = new List<KeyValuePair<string, double>>();
-
-                letterPairSource.AddRange(letterPairDic.ToList());
-
-                letterPairSource.Sort(PairComparer);
-
-
-                dataGridView3.DataSource = letterPairSource;
-                dataGridView3.Columns[0].HeaderText  = "Буква";
-                dataGridView3.Columns[1].HeaderText = "Частота";
-
-            }
         }
         public int PairComparer(KeyValuePair<string, int> p1, KeyValuePair<string, int> p2)
         {
@@ -181,6 +136,24 @@ namespace Cryptograph
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             alphabet = Alphabets.Ukrainian;
+        }
+
+        private void textBox_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+            {
+                StreamReader sr = new StreamReader(file);
+                (sender as TextBox).Text += sr.ReadToEnd();
+            }
+        }
+
+        private void textBox1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+            {
+                e.Effect = DragDropEffects.All;
+            }
         }
 
     }
