@@ -56,7 +56,15 @@
       <DependentUpon>AnalizerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseCipher.cs" />
+    <Compile Include="BigInt.cs" />
     <Compile Include="CeaserCipher.cs" />
+    <Compile Include="DiffieHellman.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DiffieHellman.Designer.cs">
+      <DependentUpon>DiffieHellman.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LongInt.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +76,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AnalizerForm.resx">
       <DependentUpon>AnalizerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DiffieHellman.resx">
+      <DependentUpon>DiffieHellman.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
