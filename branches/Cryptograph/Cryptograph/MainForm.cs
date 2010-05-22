@@ -137,5 +137,11 @@ namespace Cryptograph
             }
         }
 
+        private void toolStripLabel2_Click(object sender, EventArgs e)
+        {
+            DiffieHellman dh = new DiffieHellman();
+            dh.Show();
+        }
+
     }
 }
