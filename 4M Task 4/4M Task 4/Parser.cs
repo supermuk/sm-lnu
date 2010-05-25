@@ -96,6 +96,18 @@ namespace _4M_Task_4
             return result;
         }
 
+        public double CalculateDiff(double x, double y)
+        {
+            double eps = 0.0000001;
+            return (Calculate(x + eps, y) - Calculate(x, y)) / eps;
+        }
+
+        public double CalculateDoubleDiff(double x, double y)
+        {
+            double eps = 0.0000001;
+            return (Calculate(x - eps, y) - 2 * Calculate(x, y) + Calculate(x + eps, y)) / (eps * eps);
+        }
+
         public double Calculate()
         {
             CalculateTokens();
