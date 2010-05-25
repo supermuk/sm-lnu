@@ -111,7 +111,19 @@ namespace _4M_Task_4
                 }
             return result;
         }
-        
+        public override string ToString()
+        {
+            string s = "";
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    s += arr[i][j] + " ";
+                }
+                s += "\r\n";
+            }
+            return s;
+        }
     }
 
 }
