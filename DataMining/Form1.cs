@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Linq;
 using DataMining.DatabaseDataSetTableAdapters;
+using System.Data.Linq;
 
 namespace DataMining
 {
@@ -15,12 +16,29 @@ namespace DataMining
     {
         List<string> categories = new List<string>();
         DatabaseDataSet db = new DatabaseDataSet();
-        GolfTableAdapter adapter = new GolfTableAdapter();
+        GolfTableAdapter golfAdapter = new GolfTableAdapter();
+        FlowersTableAdapter flowerAdapter = new FlowersTableAdapter();
+
+        List<Flower> flowers = new List<Flower>();
+        KMeans<Flower> kMeans = null;
+
         public Form1()
         {
             InitializeComponent();
 
-            adapter.Fill(db.Golf);
+            golfAdapter.Fill(db.Golf);
+            flowerAdapter.Fill(db.Flowers);
+
+            flowers =
+                (from f in db.Flowers
+                 select new Flower
+                 {
+                     ID = f.ID,
+                     PetalLength = f.PetalLength,
+                     PetalWidth = f.PetalWidth,
+                     SepalLength = f.SepalLength,
+                     SepalWidth = f.SepalWidth
+                 }).ToList();
 
             categories.Add("Спостереження");
             categories.Add("Температура");
@@ -58,6 +76,8 @@ namespace DataMining
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            // TODO: This line of code loads data into the 'databaseDataSet.Flowers' table. You can move, or remove it, as needed.
+            this.flowersTableAdapter.Fill(this.databaseDataSet.Flowers);
             // TODO: This line of code loads data into the 'databaseDataSet.Golf' table. You can move, or remove it, as needed.
             this.golfTableAdapter.Fill(this.databaseDataSet.Golf);
 
@@ -122,7 +142,7 @@ namespace DataMining
         private void button2_Click(object sender, EventArgs e)
         {
             dataGridView2.Rows.Clear();
-
+            dataGridView3.Rows.Clear();
             List<Hypothesis> hypos = new List<Hypothesis>();
 
             int yesAll = 
@@ -183,9 +203,68 @@ namespace DataMining
                 dataGridView3.Rows.Add(hypos[i].ToString());
             }
 
+            double pYes = (double)yesAll / (double)(yesAll + noAll);
+            double pNo = (double)noAll / (double)(yesAll + noAll);
+            if (comboBox2.SelectedIndex >= 0)
+            {
+                pYes *= (hypos.Single(i => i.Category == categories[0] && i.Value == comboBox2.SelectedItem as string && i.Result == "Є") as Hypothesis).Probabylity;
+                pNo *= (hypos.Single(i => i.Category == categories[0] && i.Value == comboBox2.SelectedItem as string && i.Result == "Ні") as Hypothesis).Probabylity;
+                
+            }
+            if (comboBox3.SelectedIndex >= 0)
+            {
+                pYes *= (hypos.Single(i => i.Category == categories[1] && i.Value == comboBox3.SelectedItem as string && i.Result == "Є") as Hypothesis).Probabylity;
+                pNo *= (hypos.Single(i => i.Category == categories[1] && i.Value == comboBox3.SelectedItem as string && i.Result == "Ні") as Hypothesis).Probabylity;
 
+            }
+            if (comboBox4.SelectedIndex >= 0)
+            {
+                pYes *= (hypos.Single(i => i.Category == categories[2] && i.Value == comboBox4.SelectedItem as string && i.Result == "Є") as Hypothesis).Probabylity;
+                pNo *= (hypos.Single(i => i.Category == categories[2] && i.Value == comboBox4.SelectedItem as string && i.Result == "Ні") as Hypothesis).Probabylity;
 
+            }
+            if (comboBox5.SelectedIndex >= 0)
+            {
+                pYes *= (hypos.Single(i => i.Category == categories[3] && i.Value == comboBox5.SelectedItem as string && i.Result == "Є") as Hypothesis).Probabylity;
+                pNo *= (hypos.Single(i => i.Category == categories[3] && i.Value == comboBox5.SelectedItem as string && i.Result == "Ні") as Hypothesis).Probabylity;
 
+            }
+
+            textBox2.Text = (pYes / (pYes + pNo)).ToString();
+            
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (kMeans == null)
+            {
+                kMeans = new KMeans<Flower>(flowers.ToList(), (int)numericUpDown1.Value, 0);
+            }
+            else
+            {
+                kMeans.NextStep();
+            }
+            kMeans.WriteToDataGridView(dataGridView4);
+        }
+
+        private void tabControl1_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex > 1)
+            {
+                dataGridView1.Visible = false;
+                dataGridView5.Visible = true;
+            }
+            else
+            {
+                dataGridView1.Visible = true;
+                dataGridView5.Visible = false;
+            }
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            kMeans = null;
+        }
+
     }
 }

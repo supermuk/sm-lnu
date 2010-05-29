@@ -10,4 +10,13 @@
       <Column Name="Game" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="dbo.Flowers" Member="Flowers">
+    <Type Name="Flower">
+      <Column Name="ID" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="SepalLength" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="SepalWidth" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PetalLength" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PetalWidth" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>
