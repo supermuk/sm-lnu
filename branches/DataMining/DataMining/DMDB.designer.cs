@@ -69,6 +69,14 @@ namespace DataMining
 				return this.GetTable<Golf>();
 			}
 		}
+		
+		public System.Data.Linq.Table<Flower> Flowers
+		{
+			get
+			{
+				return this.GetTable<Flower>();
+			}
+		}
 	}
 	
 	[Table(Name="dbo.Golf")]
@@ -165,6 +173,105 @@ namespace DataMining
 				if ((this._Game != value))
 				{
 					this._Game = value;
+				}
+			}
+		}
+	}
+	
+	[Table(Name="dbo.Flowers")]
+	public partial class Flower
+	{
+		
+		private double _ID;
+		
+		private System.Nullable<double> _SepalLength;
+		
+		private System.Nullable<double> _SepalWidth;
+		
+		private System.Nullable<double> _PetalLength;
+		
+		private System.Nullable<double> _PetalWidth;
+		
+		public Flower()
+		{
+		}
+		
+		[Column(Storage="_ID", DbType="Float NOT NULL")]
+		public double ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this._ID = value;
+				}
+			}
+		}
+		
+		[Column(Storage="_SepalLength", DbType="Float")]
+		public System.Nullable<double> SepalLength
+		{
+			get
+			{
+				return this._SepalLength;
+			}
+			set
+			{
+				if ((this._SepalLength != value))
+				{
+					this._SepalLength = value;
+				}
+			}
+		}
+		
+		[Column(Storage="_SepalWidth", DbType="Float")]
+		public System.Nullable<double> SepalWidth
+		{
+			get
+			{
+				return this._SepalWidth;
+			}
+			set
+			{
+				if ((this._SepalWidth != value))
+				{
+					this._SepalWidth = value;
+				}
+			}
+		}
+		
+		[Column(Storage="_PetalLength", DbType="Float")]
+		public System.Nullable<double> PetalLength
+		{
+			get
+			{
+				return this._PetalLength;
+			}
+			set
+			{
+				if ((this._PetalLength != value))
+				{
+					this._PetalLength = value;
+				}
+			}
+		}
+		
+		[Column(Storage="_PetalWidth", DbType="Float")]
+		public System.Nullable<double> PetalWidth
+		{
+			get
+			{
+				return this._PetalWidth;
+			}
+			set
+			{
+				if ((this._PetalWidth != value))
+				{
+					this._PetalWidth = value;
 				}
 			}
 		}
