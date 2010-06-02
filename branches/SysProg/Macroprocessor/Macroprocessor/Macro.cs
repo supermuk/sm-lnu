@@ -84,44 +84,34 @@ namespace Macroprocessor
 
 
         public bool Replace(ref string input)
-        {
+        { 
             Match match;
             bool changed = false;
-            do
-            {
-                match = FindRegex.Match(input);
 
-                if (match.Success)
-                {
-                    LocalVarsIndex++;
-
-                    List<string> arguments = GetArguments(match.Groups[1].Value);
-                    string currentBody = Description;
-
-                    if (arguments.Count != Arguments.Count)
-                    {
-                        throw new Exception("Incorect count of arguments");
-                    }
-
-                    for (int i = 0; i < arguments.Count; i++)
-                    {
-                        currentBody = currentBody.Replace("#" + Arguments[i], arguments[i]);
-                    }
-
-                    currentBody = ParseLocalVars(currentBody);
-
-                    input = input.Substring(0, match.Index) + currentBody + input.Substring(match.Index + match.Length);
-
-                    changed = true;
-                }
-            }
-            while (match.Success);
-            /*
             while ((match = FindRegex.Match(input)).Success)
             {
                 LocalVarsIndex++;
-
-                List<string> arguments = GetArguments(match.Groups[1].Value);
+                string args = match.Groups[1].Value;
+                int count = 0;
+                int diff = 0;
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i] == '(')
+                    {
+                        count++;
+                    }
+                    else if (args[i] == ')')
+                    {
+                        if (count == 0)
+                        {
+                            diff = args.Length - i;
+                            args = args.Substring(0, i);
+                            break;
+                        }
+                        count--;
+                    }
+                }
+                List<string> arguments = GetArguments(args);
                 string currentBody = Description;
 
                 if (arguments.Count != Arguments.Count)
@@ -137,10 +127,10 @@ namespace Macroprocessor
                 currentBody = ParseLocalVars(currentBody);
                 currentBody = ParseGlobalVars(currentBody);
 
-                input = input.Substring(0, match.Index) + currentBody + input.Substring(match.Index + match.Length);
+                input = input.Substring(0, match.Index) + currentBody + input.Substring(match.Index + match.Length - diff);
 
                 changed = true;
-            }*/
+            }
             return changed;
         }
 

@@ -22,6 +22,7 @@ namespace Macroprocessor
         {
             try
             {
+                textBox3.Text = "Output: \r\n";
                 textBox2.Text = MacroProcessor.Compile(textBox1.Text);
             }
             catch (Exception ex)
