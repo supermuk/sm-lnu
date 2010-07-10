@@ -1,0 +1,16 @@
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative_Methods_2.Properties.Resources.resources
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative Methods 2.csproj.GenerateResource.Cache
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\bin\Debug\Iterative Methods 2.exe
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\bin\Debug\Iterative Methods 2.pdb
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative Methods 2.exe
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative Methods 2.pdb
+C:\Users\Орест\Documents\Visual Studio 2008\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative_Methods_2.Form1.resources
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative Methods 2.exe
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative Methods 2.pdb
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\bin\Debug\Iterative Methods 2.exe
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\bin\Debug\Iterative Methods 2.pdb
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\ResolveAssemblyReference.cache
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative_Methods_2.Form1.resources
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative_Methods_2.Properties.Resources.resources
+D:\SMile\Projects\Iterative Methods 2\Iterative Methods 2\obj\Debug\Iterative Methods 2.csproj.GenerateResource.Cache
