@@ -1,0 +1,9 @@
+#macro Max(a,b)
+(#a >#b ? #a : #b)
+#endmacro
+
+#macro Max4(a,b,c,d)
+#Max( #Max(#a,#b), #Max(#c, #d))
+#endmacro
+
+#Max4(1,2,3,4)
