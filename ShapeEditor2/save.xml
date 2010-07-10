@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<ArrayOfShape xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Shape xsi:type="Rectangle">
+    <X>167</X>
+    <Y>42</Y>
+    <Width>236</Width>
+    <Height>247</Height>
+  </Shape>
+  <Shape xsi:type="Rectangle">
+    <X>66</X>
+    <Y>181</Y>
+    <Width>303</Width>
+    <Height>220</Height>
+  </Shape>
+  <Shape xsi:type="Rectangle">
+    <X>290</X>
+    <Y>31</Y>
+    <Width>259</Width>
+    <Height>204</Height>
+  </Shape>
+  <Shape xsi:type="Ellipse">
+    <X>58</X>
+    <Y>32</Y>
+    <Width>199</Width>
+    <Height>327</Height>
+  </Shape>
+  <Shape xsi:type="Polygon">
+    <points>
+      <Point>
+        <X>235</X>
+        <Y>144</Y>
+      </Point>
+      <Point>
+        <X>685</X>
+        <Y>224</Y>
+      </Point>
+      <Point>
+        <X>659</X>
+        <Y>163</Y>
+      </Point>
+      <Point>
+        <X>659</X>
+        <Y>163</Y>
+      </Point>
+      <Point>
+        <X>240</X>
+        <Y>144</Y>
+      </Point>
+      <Point>
+        <X>235</X>
+        <Y>144</Y>
+      </Point>
+    </points>
+  </Shape>
+  <Shape xsi:type="Polygon">
+    <points>
+      <Point>
+        <X>539</X>
+        <Y>286</Y>
+      </Point>
+      <Point>
+        <X>432</X>
+        <Y>419</Y>
+      </Point>
+      <Point>
+        <X>656</X>
+        <Y>421</Y>
+      </Point>
+      <Point>
+        <X>656</X>
+        <Y>421</Y>
+      </Point>
+      <Point>
+        <X>538</X>
+        <Y>288</Y>
+      </Point>
+      <Point>
+        <X>539</X>
+        <Y>286</Y>
+      </Point>
+    </points>
+  </Shape>
+  <Shape xsi:type="Rectangle">
+    <X>0</X>
+    <Y>0</Y>
+    <Width>586</Width>
+    <Height>166</Height>
+  </Shape>
+  <Shape xsi:type="Rectangle">
+    <X>591</X>
+    <Y>229</Y>
+    <Width>152</Width>
+    <Height>181</Height>
+  </Shape>
+  <Shape xsi:type="Rectangle">
+    <X>186</X>
+    <Y>212</Y>
+    <Width>206</Width>
+    <Height>136</Height>
+  </Shape>
+</ArrayOfShape>
