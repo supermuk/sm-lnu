@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iteration Methods", "Iteration Methods\Iteration Methods.csproj", "{73EBD549-4AED-411C-9E4A-90BF0309513D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73EBD549-4AED-411C-9E4A-90BF0309513D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73EBD549-4AED-411C-9E4A-90BF0309513D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73EBD549-4AED-411C-9E4A-90BF0309513D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73EBD549-4AED-411C-9E4A-90BF0309513D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
