@@ -1,0 +1,9 @@
+#macro FOR(a,b)
+#local i
+for(int #i = 0; #i < #a; #i++)
+#endmacro
+
+#FOR(1,10)
+{
+cout<< "hello world";
+}
