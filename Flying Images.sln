@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Flying Images", "Flying Images\Flying Images.vcproj", "{6F4EB2FC-7858-44B0-9C85-E3B551377415}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F4EB2FC-7858-44B0-9C85-E3B551377415}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6F4EB2FC-7858-44B0-9C85-E3B551377415}.Debug|Win32.Build.0 = Debug|Win32
+		{6F4EB2FC-7858-44B0-9C85-E3B551377415}.Release|Win32.ActiveCfg = Release|Win32
+		{6F4EB2FC-7858-44B0-9C85-E3B551377415}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
