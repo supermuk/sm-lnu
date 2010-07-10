@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="Database1" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|\Database1.mdf;Integrated Security=True;User Instance=True" SettingsObjectName="ShapeEditor2.Properties.Settings" SettingsPropertyName="Database1ConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tblPictures" Member="tblPictures">
+    <Type Name="tblPicture">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="tblPicture_tblShape" Member="tblShapes" OtherKey="PicturesId" Type="tblShape" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblShapes" Member="tblShapes">
+    <Type Name="tblShape">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PicturesId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Type" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Square" Type="System.Single" DbType="Real" CanBeNull="true" />
+      <Association Name="tblShape_tblPoint" Member="tblPoints" OtherKey="ShapeId" Type="tblPoint" />
+      <Association Name="tblPicture_tblShape" Member="tblPicture" ThisKey="PicturesId" Type="tblPicture" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblPoints" Member="tblPoints">
+    <Type Name="tblPoint">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ShapeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="X" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Y" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Position" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="tblShape_tblPoint" Member="tblShape" ThisKey="ShapeId" Type="tblShape" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
