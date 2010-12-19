@@ -275,9 +275,7 @@
     <Content Include="Images\royalty.jpg" />
     <Content Include="js\jquery-1.4.4.min.js" />
     <Content Include="js\jquery-ui-1.8.7.custom.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
+    <Content Include="manifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
