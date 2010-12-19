@@ -1,0 +1,11 @@
+D:\TopSecret\PseudoEdu\obj\Debug\ResolveAssemblyReference.cache
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.Form1.resources
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.Properties.Resources.resources
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.csproj.GenerateResource.Cache
+D:\TopSecret\PseudoEdu\bin\Debug\PseudoEdu.exe
+D:\TopSecret\PseudoEdu\bin\Debug\PseudoEdu.pdb
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.exe
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.pdb
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.ChoiseTest.resources
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.Summary.resources
+D:\TopSecret\PseudoEdu\obj\Debug\PseudoEdu.About.resources

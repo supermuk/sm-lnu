@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5D299093-9333-49DA-AC15-100AB3A81D5F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PseudoEdu</RootNamespace>
+    <AssemblyName>PseudoEdu</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChoiseTest.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ChoiseTest.Designer.cs">
+      <DependentUpon>ChoiseTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Course.cs" />
+    <Compile Include="Exam.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ITest.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChoiseTest.resx">
+      <DependentUpon>ChoiseTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Summary.resx">
+      <DependentUpon>Summary.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Summary.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Summary.Designer.cs">
+      <DependentUpon>Summary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Theory.cs" />
+    <Compile Include="XmlCourse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="html\images\image001.wmz" />
+    <None Include="html\images\image003.wmz" />
+    <None Include="html\images\image005.wmz" />
+    <None Include="html\images\image007.wmz" />
+    <None Include="html\images\image009.wmz" />
+    <None Include="html\images\image017.wmz" />
+    <None Include="html\images\image019.wmz" />
+    <None Include="html\images\image021.wmz" />
+    <None Include="html\images\image022.wmz" />
+    <None Include="html\images\image024.wmz" />
+    <None Include="html\images\image026.wmz" />
+    <None Include="html\images\image028.wmz" />
+    <None Include="html\images\image030.wmz" />
+    <None Include="html\images\image032.wmz" />
+    <None Include="html\images\image034.wmz" />
+    <None Include="html\images\image036.wmz" />
+    <None Include="html\images\image038.wmz" />
+    <None Include="html\images\image040.wmz" />
+    <None Include="html\images\image042.wmz" />
+    <None Include="html\images\image044.wmz" />
+    <None Include="html\images\image046.wmz" />
+    <None Include="html\images\image050.wmz" />
+    <None Include="html\images\image052.wmz" />
+    <None Include="html\images\image054.wmz" />
+    <None Include="html\images\image056.wmz" />
+    <None Include="html\images\image058.wmz" />
+    <None Include="html\images\image060.wmz" />
+    <None Include="html\images\image062.wmz" />
+    <None Include="html\images\image064.wmz" />
+    <None Include="html\images\image066.wmz" />
+    <None Include="html\images\image068.wmz" />
+    <None Include="html\images\image071.wmz" />
+    <None Include="html\images\image073.wmz" />
+    <None Include="html\images\image075.wmz" />
+    <None Include="html\images\image076.wmz" />
+    <None Include="html\images\image078.wmz" />
+    <None Include="html\images\image080.wmz" />
+    <None Include="html\images\image082.wmz" />
+    <None Include="html\images\image084.wmz" />
+    <None Include="html\images\image086.wmz" />
+    <None Include="html\images\image088.wmz" />
+    <None Include="html\images\image090.wmz" />
+    <None Include="html\images\image092.wmz" />
+    <None Include="html\images\image094.wmz" />
+    <None Include="html\images\image096.wmz" />
+    <None Include="html\images\image098.wmz" />
+    <None Include="html\images\image100.wmz" />
+    <None Include="html\images\image102.wmz" />
+    <None Include="html\images\image104.wmz" />
+    <None Include="html\images\image106.wmz" />
+    <None Include="html\images\image108.wmz" />
+    <None Include="html\images\image110.wmz" />
+    <None Include="html\images\image112.wmz" />
+    <None Include="html\images\image114.wmz" />
+    <None Include="html\images\image116.wmz" />
+    <None Include="html\images\image118.wmz" />
+    <None Include="html\images\image120.wmz" />
+    <None Include="html\images\image122.wmz" />
+    <None Include="html\images\image124.wmz" />
+    <None Include="html\images\image126.wmz" />
+    <None Include="html\images\image128.wmz" />
+    <None Include="html\images\image130.wmz" />
+    <None Include="html\images\oledata.mso" />
+    <None Include="html\images\themedata.thmx" />
+    <None Include="Images\right.jpg" />
+    <Content Include="css\Default.css" />
+    <Content Include="html\Test6.htm" />
+    <Content Include="html\Test5.htm" />
+    <Content Include="html\Test4.htm" />
+    <Content Include="html\Test3.htm" />
+    <Content Include="html\Test2.htm" />
+    <Content Include="html\Test1.htm" />
+    <Content Include="html\Page6.htm" />
+    <Content Include="html\Page5.htm" />
+    <Content Include="html\Page4.htm" />
+    <Content Include="html\Page3.htm" />
+    <Content Include="html\Page2.htm" />
+    <Content Include="html\images\books.jpg" />
+    <Content Include="html\images\colorschememapping.xml" />
+    <Content Include="html\images\exam.jpg" />
+    <Content Include="html\images\filelist.xml" />
+    <Content Include="html\images\header.htm" />
+    <Content Include="html\images\image002.png" />
+    <Content Include="html\images\image004.png" />
+    <Content Include="html\images\image006.png" />
+    <Content Include="html\images\image008.png" />
+    <Content Include="html\images\image010.png" />
+    <Content Include="html\images\image011.png" />
+    <Content Include="html\images\image012.png" />
+    <Content Include="html\images\image013.png" />
+    <Content Include="html\images\image014.jpg" />
+    <Content Include="html\images\image015.png" />
+    <Content Include="html\images\image016.png" />
+    <Content Include="html\images\image018.png" />
+    <Content Include="html\images\image020.png" />
+    <Content Include="html\images\image023.png" />
+    <Content Include="html\images\image025.png" />
+    <Content Include="html\images\image027.png" />
+    <Content Include="html\images\image029.png" />
+    <Content Include="html\images\image031.png" />
+    <Content Include="html\images\image033.png" />
+    <Content Include="html\images\image035.png" />
+    <Content Include="html\images\image037.png" />
+    <Content Include="html\images\image039.png" />
+    <Content Include="html\images\image041.png" />
+    <Content Include="html\images\image043.png" />
+    <Content Include="html\images\image045.png" />
+    <Content Include="html\images\image047.png" />
+    <Content Include="html\images\image048.png" />
+    <Content Include="html\images\image049.jpg" />
+    <Content Include="html\images\image051.png" />
+    <Content Include="html\images\image053.png" />
+    <Content Include="html\images\image055.png" />
+    <Content Include="html\images\image057.png" />
+    <Content Include="html\images\image059.png" />
+    <Content Include="html\images\image061.png" />
+    <Content Include="html\images\image063.png" />
+    <Content Include="html\images\image065.png" />
+    <Content Include="html\images\image067.png" />
+    <Content Include="html\images\image069.png" />
+    <Content Include="html\images\image070.png" />
+    <Content Include="html\images\image072.png" />
+    <Content Include="html\images\image074.png" />
+    <Content Include="html\images\image077.png" />
+    <Content Include="html\images\image079.png" />
+    <Content Include="html\images\image081.png" />
+    <Content Include="html\images\image083.png" />
+    <Content Include="html\images\image085.png" />
+    <Content Include="html\images\image087.png" />
+    <Content Include="html\images\image089.png" />
+    <Content Include="html\images\image091.png" />
+    <Content Include="html\images\image093.png" />
+    <Content Include="html\images\image095.png" />
+    <Content Include="html\images\image097.png" />
+    <Content Include="html\images\image099.png" />
+    <Content Include="html\images\image101.png" />
+    <Content Include="html\images\image103.png" />
+    <Content Include="html\images\image105.png" />
+    <Content Include="html\images\image107.png" />
+    <Content Include="html\images\image109.png" />
+    <Content Include="html\images\image111.png" />
+    <Content Include="html\images\image113.png" />
+    <Content Include="html\images\image115.png" />
+    <Content Include="html\images\image117.png" />
+    <Content Include="html\images\image119.png" />
+    <Content Include="html\images\image121.png" />
+    <Content Include="html\images\image123.png" />
+    <Content Include="html\images\image125.png" />
+    <Content Include="html\images\image127.png" />
+    <Content Include="html\images\image129.png" />
+    <Content Include="html\images\image131.png" />
+    <Content Include="html\images\item0139.xml" />
+    <Content Include="html\images\props140.xml" />
+    <Content Include="html\Page1.htm" />
+    <Content Include="Images\books.bmp" />
+    <Content Include="Images\books.jpg" />
+    <Content Include="Images\exam.jpg" />
+    <Content Include="Images\files11.gif" />
+    <Content Include="Images\function.jpg" />
+    <Content Include="Images\left.jpg" />
+    <Content Include="Images\royalty.jpg" />
+    <Content Include="js\jquery-1.4.4.min.js" />
+    <Content Include="js\jquery-ui-1.8.7.custom.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
