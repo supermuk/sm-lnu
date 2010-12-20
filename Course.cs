@@ -123,6 +123,8 @@ namespace PseudoEdu
         {
             if (arg.Node.Name == "Summary")
             {
+                TheoryEnable = true;
+                ExamEnable = false;
                 CurrentType = 2;
                 ExpandSummary();
                 return;
@@ -203,6 +205,7 @@ namespace PseudoEdu
         }
         private void SelectTest(TreeNode Node)
         {
+            TheoryEnable = false;
             CurrentNodeIndex = Node.Index;
             foreach (TreeNode n in Tree.Nodes[CurrentType].Nodes)
             {
