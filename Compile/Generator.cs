@@ -1,254 +1,235 @@
-using Collections = System.Collections.Generic;
-using Reflect = System.Reflection;
-using Emit = System.Reflection.Emit;
-using IO = System.IO;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.IO;
 
-public sealed class Generator
+namespace Compiler.Compile
 {
-    Emit.ILGenerator il = null;
-    Collections.Dictionary<string, Emit.LocalBuilder> symbolTable;
-
-    public Generator(Stmt stmt, string moduleName)
+    public sealed class Generator
     {
-        if (IO.Path.GetFileName(moduleName) != moduleName)
+        readonly ILGenerator _Il = null;
+        readonly Dictionary<string, LocalBuilder> _SymbolsTable;
+
+        public Generator(Statement stmt, string moduleName)
         {
-            throw new System.Exception("can only output into current directory!");
-        }
-
-        Reflect.AssemblyName name = new Reflect.AssemblyName(IO.Path.GetFileNameWithoutExtension(moduleName));
-        Emit.AssemblyBuilder asmb = System.AppDomain.CurrentDomain.DefineDynamicAssembly(name, Emit.AssemblyBuilderAccess.Save);
-        Emit.ModuleBuilder modb = asmb.DefineDynamicModule(moduleName);
-        Emit.TypeBuilder typeBuilder = modb.DefineType("Foo");
-
-        Emit.MethodBuilder methb = typeBuilder.DefineMethod("Main", Reflect.MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
-
-        // CodeGenerator
-        this.il = methb.GetILGenerator();
-        this.symbolTable = new Collections.Dictionary<string, Emit.LocalBuilder>();
-
-        // Go Compile!
-        this.GenStmt(stmt);
-
-        il.Emit(Emit.OpCodes.Ret);
-        typeBuilder.CreateType();
-        modb.CreateGlobalFunctions();
-        asmb.SetEntryPoint(methb);
-        asmb.Save(moduleName);
-        this.symbolTable = null;
-        this.il = null;
-    }
-
-
-	private void GenStmt(Stmt stmt)
-	{
-		if (stmt is Sequence)
-		{
-			Sequence seq = (Sequence)stmt;
-			this.GenStmt(seq.First);
-			this.GenStmt(seq.Second);
-		}		
-        
-        else if (stmt is DeclareVar)
-		{
-			// declare a local
-			DeclareVar declare = (DeclareVar)stmt;
-			this.symbolTable[declare.Ident] = this.il.DeclareLocal(this.TypeOfExpr(declare.Expr));
-
-			// set the initial value
-			Assign assign = new Assign();
-			assign.Ident = declare.Ident;
-			assign.Expr = declare.Expr;
-			this.GenStmt(assign);
-		}        
-        
-        else if (stmt is Assign)
-        {
-	        Assign assign = (Assign)stmt;
-	        this.GenExpr(assign.Expr, this.TypeOfExpr(assign.Expr));
-	        this.Store(assign.Ident, this.TypeOfExpr(assign.Expr));
-        }			
-        else if (stmt is Print)
-		{
-			// the "print" statement is an alias for System.Console.WriteLine. 
-			// it uses the string case
-			this.GenExpr(((Print)stmt).Expr, typeof(string));
-			this.il.Emit(Emit.OpCodes.Call, typeof(System.Console).GetMethod("WriteLine", new System.Type[] { typeof(string) }));
-		}	
-
-		else if (stmt is ReadInt)
-		{
-			this.il.Emit(Emit.OpCodes.Call, typeof(System.Console).GetMethod("ReadLine", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static, null, new System.Type[] { }, null));
-			this.il.Emit(Emit.OpCodes.Call, typeof(int).GetMethod("Parse", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static, null, new System.Type[] { typeof(string) }, null));
-			this.Store(((ReadInt)stmt).Ident, typeof(int));
-		}
-		else if (stmt is ForLoop)
-		{
-			// example: 
-			// for x = 0 to 100 do
-			//   print "hello";
-			// end;
-
-			// x = 0
-			ForLoop forLoop = (ForLoop)stmt;
-			Assign assign = new Assign();
-			assign.Ident = forLoop.Ident;
-			assign.Expr = forLoop.From;
-			this.GenStmt(assign);			
-			// jump to the test
-			Emit.Label test = this.il.DefineLabel();
-			this.il.Emit(Emit.OpCodes.Br, test);
-
-			// statements in the body of the for loop
-			Emit.Label body = this.il.DefineLabel();
-			this.il.MarkLabel(body);
-			this.GenStmt(forLoop.Body);
-
-			// to (increment the value of x)
-			this.il.Emit(Emit.OpCodes.Ldloc, this.symbolTable[forLoop.Ident]);
-			this.il.Emit(Emit.OpCodes.Ldc_I4, 1);
-			this.il.Emit(Emit.OpCodes.Add);
-			this.Store(forLoop.Ident, typeof(int));
-
-			// **test** does x equal 100? (do the test)
-			this.il.MarkLabel(test);
-			this.il.Emit(Emit.OpCodes.Ldloc, this.symbolTable[forLoop.Ident]);
-			this.GenExpr(forLoop.To, typeof(int));
-			this.il.Emit(Emit.OpCodes.Blt, body);
-		}
-		else
-		{
-			throw new System.Exception("don't know how to gen a " + stmt.GetType().Name);
-		}
-
-
-
-
-	}    
-    	
-    private void Store(string name, System.Type type)
-	{
-		if (this.symbolTable.ContainsKey(name))
-		{
-			Emit.LocalBuilder locb = this.symbolTable[name];
-
-			if (locb.LocalType == type)
-			{
-				this.il.Emit(Emit.OpCodes.Stloc, this.symbolTable[name]);
-			}
-			else
-			{
-				throw new System.Exception("'" + name + "' is of type " + locb.LocalType.Name + " but attempted to store value of type " + type.Name);
-			}
-		}
-		else
-		{
-			throw new System.Exception("undeclared variable '" + name + "'");
-		}
-	}
-
-
-
-    private void GenExpr(Expr expr, System.Type expectedType)
-	{
-		System.Type deliveredType;
-		
-        if (expr is StringLiteral)
-		{
-			deliveredType = typeof(string);
-			this.il.Emit(Emit.OpCodes.Ldstr, ((StringLiteral)expr).Value);
-		}
-		else if (expr is IntLiteral)
-		{
-			deliveredType = typeof(int);
-			this.il.Emit(Emit.OpCodes.Ldc_I4, ((IntLiteral)expr).Value);
-		}        
-        else if (expr is Variable)
-		{
-			string ident = ((Variable)expr).Ident;
-			deliveredType = this.TypeOfExpr(expr);
-
-			if (!this.symbolTable.ContainsKey(ident))
-			{
-				throw new System.Exception("undeclared variable '" + ident + "'");
-			}
-
-			this.il.Emit(Emit.OpCodes.Ldloc, this.symbolTable[ident]);
-        } 
-        else if (expr is BinExpr)
-        {
-            deliveredType = typeof(int);
-            GenExpr(((BinExpr)expr).Left, typeof(int));
-            GenExpr(((BinExpr)expr).Right, typeof(int));
-            BinExpr binExpr = (BinExpr) expr;
-            switch (binExpr.Op)
+            if (Path.GetFileName(moduleName) != moduleName)
             {
-                case BinOp.Add:
-                    this.il.Emit(Emit.OpCodes.Add);
-                    break;
-                case BinOp.Sub:
-                    this.il.Emit(Emit.OpCodes.Sub);
-                    break;
-                case BinOp.Mul:
-                    this.il.Emit(Emit.OpCodes.Mul);
-                    break;
-                case BinOp.Div:
-                    this.il.Emit(Emit.OpCodes.Div);
-                    break;
+                throw new GeneratorException("Only can output to current directory");
             }
-        }
-        else
-        {
-            throw new System.Exception("don't know how to generate " + expr.GetType().Name);
+
+            var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(moduleName));
+            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Save);
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
+            var typeBuilder = moduleBuilder.DefineType("OrestIgor");
+
+            var methodBuilder = typeBuilder.DefineMethod("Main", MethodAttributes.Static, typeof(void), System.Type.EmptyTypes);
+
+            // CodeGenerator
+            _Il = methodBuilder.GetILGenerator();
+            _SymbolsTable = new Dictionary<string, LocalBuilder>();
+
+            // Go Compile!
+            GenerateStatement(stmt);
+
+            _Il.Emit(OpCodes.Ret);
+            typeBuilder.CreateType();
+            moduleBuilder.CreateGlobalFunctions();
+            assemblyBuilder.SetEntryPoint(methodBuilder);
+            assemblyBuilder.Save(moduleName);
+            
+            _SymbolsTable = null;
+            _Il = null;
         }
 
-        if (deliveredType != expectedType)
+
+        private void GenerateStatement(Statement stmt)
         {
-            if (deliveredType == typeof(int) &&
-                expectedType == typeof(string))
+            if (stmt is Sequence)
             {
-                this.il.Emit(Emit.OpCodes.Box, typeof(int));
-                this.il.Emit(Emit.OpCodes.Callvirt, typeof(object).GetMethod("ToString"));
+                var seq = (Sequence)stmt;
+                
+                GenerateStatement(seq.First);
+                GenerateStatement(seq.Second);
+            }		
+            else if (stmt is DeclareVariable)
+            {
+                var declare = (DeclareVariable)stmt;
+                
+                _SymbolsTable[declare.Ident] = _Il.DeclareLocal(TypeOfExpr(declare.Expr));
+
+                var assign = new Assign { Ident = declare.Ident, Expr = declare.Expr };
+                
+                GenerateStatement(assign);
+            }        
+            else if (stmt is Assign)
+            {
+                var assign = (Assign)stmt;
+
+                GenerateExpression(assign.Expr, TypeOfExpr(assign.Expr));
+                Store(assign.Ident, TypeOfExpr(assign.Expr));
+            }			
+            else if (stmt is Print)
+            {
+                GenerateExpression(((Print)stmt).Expr, typeof(string));
+                _Il.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine", new [] { typeof(string) }));
+            }	
+
+            else if (stmt is ReadInt)
+            {
+                _Il.Emit(OpCodes.Call, typeof(Console).GetMethod("ReadLine", BindingFlags.Public | BindingFlags.Static, null, new Type[] { }, null));
+                _Il.Emit(OpCodes.Call, typeof(int).GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new [] { typeof(string) }, null));
+                Store(((ReadInt)stmt).Ident, typeof(int));
+            }
+            else if (stmt is ForLoop)
+            {
+                var forLoop = (ForLoop)stmt;
+                var assign = new Assign { Ident = forLoop.Ident, Expr = forLoop.From };
+                GenerateStatement(assign);
+
+                var test = _Il.DefineLabel();
+                _Il.Emit(OpCodes.Br, test);
+
+                var body = _Il.DefineLabel();
+                _Il.MarkLabel(body);
+                GenerateStatement(forLoop.Body);
+
+                _Il.Emit(OpCodes.Ldloc, _SymbolsTable[forLoop.Ident]);
+                _Il.Emit(OpCodes.Ldc_I4, 1);
+                _Il.Emit(OpCodes.Add);
+                Store(forLoop.Ident, typeof(int));
+
+                _Il.MarkLabel(test);
+                _Il.Emit(OpCodes.Ldloc, _SymbolsTable[forLoop.Ident]);
+                GenerateExpression(forLoop.To, typeof(int));
+                _Il.Emit(OpCodes.Blt, body);
             }
             else
             {
-                throw new System.Exception("can't coerce a " + deliveredType.Name + " to a " + expectedType.Name);
+                throw new GeneratorException("Cant generate a " + stmt.GetType().Name);
+            }
+        }    
+    	
+        private void Store(string name, Type type)
+        {
+            if (!_SymbolsTable.ContainsKey(name))
+            {
+                throw new GeneratorException("Undeclared variable '" + name + "'");
+            }
+            
+            var localBuilder = _SymbolsTable[name];
+
+            if (localBuilder.LocalType == type)
+            {
+                _Il.Emit(OpCodes.Stloc, _SymbolsTable[name]);
+            }
+            else
+            {
+                throw new GeneratorException("'" + name + "' is of type " + localBuilder.LocalType.Name + " but attempted to store value of type " + type.Name);
             }
         }
 
-	}
 
-
-
-    private System.Type TypeOfExpr(Expr expr)
-	{
-		if (expr is StringLiteral)
-		{
-			return typeof(string);
-		}
-		else if (expr is IntLiteral)
-		{
-			return typeof(int);
-		}
-		else if (expr is Variable)
-		{
-            Variable var = (Variable)expr;
-		    if (this.symbolTable.ContainsKey(var.Ident))
-		    {
-			    Emit.LocalBuilder locb = this.symbolTable[var.Ident];
-			    return locb.LocalType;
-		    }
-		    else
-		    {
-			    throw new System.Exception("undeclared variable '" + var.Ident + "'");
-		    }
-		}
-        else if (expr is BinExpr)
+        private void GenerateExpression(Expression expr, Type expectedType)
         {
-            return typeof(int);
+            Type deliveredType;
+		
+            if (expr is StringLiteral)
+            {
+                deliveredType = typeof(string);
+                _Il.Emit(OpCodes.Ldstr, ((StringLiteral)expr).Value);
+            }
+            else if (expr is IntLiteral)
+            {
+                deliveredType = typeof(int);
+                _Il.Emit(OpCodes.Ldc_I4, ((IntLiteral)expr).Value);
+            }        
+            else if (expr is Variable)
+            {
+                var ident = ((Variable)expr).Ident;
+                deliveredType = TypeOfExpr(expr);
+
+                if (!_SymbolsTable.ContainsKey(ident))
+                {
+                    throw new GeneratorException("Undeclared variable '" + ident + "'");
+                }
+
+                _Il.Emit(OpCodes.Ldloc, _SymbolsTable[ident]);
+            } 
+            else if (expr is BinaryExpression)
+            {
+                deliveredType = typeof(int);
+
+                GenerateExpression(((BinaryExpression)expr).Left, typeof(int));
+                GenerateExpression(((BinaryExpression)expr).Right, typeof(int));
+                
+                var binExpr = (BinaryExpression) expr;
+
+                switch (binExpr.Op)
+                {
+                    case BinaryOperator.Add:
+                        _Il.Emit(OpCodes.Add);
+                        break;
+                    case BinaryOperator.Sub:
+                        _Il.Emit(OpCodes.Sub);
+                        break;
+                    case BinaryOperator.Mul:
+                        _Il.Emit(OpCodes.Mul);
+                        break;
+                    case BinaryOperator.Div:
+                        _Il.Emit(OpCodes.Div);
+                        break;
+                }
+            }
+            else
+            {
+                throw new GeneratorException("Unable to generate " + expr.GetType().Name);
+            }
+
+            if (deliveredType != expectedType)
+            {
+                if (deliveredType == typeof(int) && expectedType == typeof(string))
+                {
+                    _Il.Emit(OpCodes.Box, typeof(int));
+                    _Il.Emit(OpCodes.Callvirt, typeof(object).GetMethod("ToString"));
+                }
+                else
+                {
+                    throw new GeneratorException("Can't convert type " + deliveredType.Name + " to " + expectedType.Name);
+                }
+            }
         }
-        else
+
+        private Type TypeOfExpr(Expression expr)
         {
-            throw new System.Exception("don't know how to calculate the type of " + expr.GetType().Name);
-        }
-	}	
+            if (expr is StringLiteral)
+            {
+                return typeof(string);
+            }
+            
+            if (expr is IntLiteral)
+            {
+                return typeof(int);
+            }
+            
+            if (expr is Variable)
+            {
+                var var = (Variable)expr;
+                
+                if (_SymbolsTable.ContainsKey(var.Ident))
+                {
+                    return _SymbolsTable[var.Ident].LocalType;
+                }
+
+                throw new GeneratorException("Undeclared variable '" + var.Ident + "'");
+            }
+            
+            if (expr is BinaryExpression)
+            {
+                return typeof(int);
+            }
+
+            throw new GeneratorException("Unable to find the type of " + expr.GetType().Name);
+        }	
+    }
 }

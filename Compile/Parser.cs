@@ -1,265 +1,270 @@
-using Collections = System.Collections.Generic;
-using Text = System.Text;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-public sealed class Parser
+namespace Compiler.Compile
 {
-	private int index;
-	private Collections.IList<object> tokens;
-	private readonly Stmt result;
-
-	public Parser(Collections.IList<object> tokens)
-	{
-		this.tokens = tokens;
-		this.index = 0;
-		this.result = this.ParseStmt();
-		
-		if (this.index != this.tokens.Count)
-			throw new System.Exception("expected EOF");
-	}
-
-	public Stmt Result
-	{
-		get { return result; }
-	}
-
-    private Stmt ParseStmt()
+    public sealed class Parser
     {
-        Stmt result;
+        #region Protected Fields
 
-		if (this.index == this.tokens.Count)
-		{
-			throw new System.Exception("expected statement, got EOF");
-		}
+        private int _Index;
+        private readonly IList<object> _Tokens;
+        private readonly Statement _Result;
 
-        // <stmt> := print <expr> 
+        #endregion
 
-        // <expr> := <string>
-	    // | <int>
-	    // | <arith_expr>
-	    // | <ident>
-		if (this.tokens[this.index].Equals("print"))
-		{
-			this.index++;
-            int endIndex = this.index;
-            while (this.tokens[endIndex] != Scanner.Semi)
+        #region Public Properties
+
+        public Statement Result
+        {
+            get { return _Result; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public Parser(IList<object> tokens)
+        {
+            _Tokens = tokens;
+            _Index = 0;
+            _Result = ParseStatement();
+
+            if (_Index != _Tokens.Count)
             {
-                endIndex++;
+                throw new ParserException("Expected EOF");
             }
-			Print print = new Print();
-			print.Expr = this.ParseExpr(endIndex);
-			result = print;
-		}
-		else if (this.tokens[this.index].Equals("var"))
-		{
-			this.index++;
-			DeclareVar declareVar = new DeclareVar();
+        }
 
-			if (this.index < this.tokens.Count &&
-				this.tokens[this.index] is string)
-			{
-				declareVar.Ident = (string)this.tokens[this.index];
-			}
-			else
-			{
-				throw new System.Exception("expected variable name after 'var'");
-			}
+        #endregion
 
-			this.index++;
-
-			if (this.index == this.tokens.Count ||
-				this.tokens[this.index] != Scanner.Equal)
-			{
-				throw new System.Exception("expected = after 'var ident'");
-			}
-
-			this.index++;
-            int endIndex = this.index;
-            while (this.tokens[endIndex] != Scanner.Semi)
+        private Statement ParseStatement()
+        {
+            if (_Index == _Tokens.Count)
             {
-                endIndex++;
+                throw new ParserException("Unexpected EOF - Expected Statement");
             }
-            declareVar.Expr = this.ParseExpr(endIndex);
-			result = declareVar;
-		}
-        else if (this.tokens[this.index].Equals("read_int"))
-		{
-			this.index++;
-			ReadInt readInt = new ReadInt();
 
-			if (this.index < this.tokens.Count &&
-				this.tokens[this.index] is string)
-			{
-				readInt.Ident = (string)this.tokens[this.index++];
-				result = readInt;
-			}
-			else
-			{
-				throw new System.Exception("expected variable name after 'read_int'");
-			}
-		}
-		else if (this.tokens[this.index].Equals("for"))
-		{
-			this.index++;
-			ForLoop forLoop = new ForLoop();
+            Statement result;
+            var currentToken = _Tokens[_Index].ToString();
 
-			if (this.index < this.tokens.Count &&
-				this.tokens[this.index] is string)
-			{
-				forLoop.Ident = (string)this.tokens[this.index];
-			}
-			else
-			{
-				throw new System.Exception("expected identifier after 'for'");
-			}
-
-			this.index++;
-
-			if (this.index == this.tokens.Count ||
-				this.tokens[this.index] != Scanner.Equal)
-			{
-				throw new System.Exception("for missing '='");
-			}
-
-			this.index++;
-
-			forLoop.From = this.ParseExpr();
-
-			if (this.index == this.tokens.Count ||
-				!this.tokens[this.index].Equals("to"))
-			{
-				throw new System.Exception("expected 'to' after for");
-			}
-
-			this.index++;
-
-			forLoop.To = this.ParseExpr();
-
-			if (this.index == this.tokens.Count ||
-				!this.tokens[this.index].Equals("do"))
-			{
-				throw new System.Exception("expected 'do' after from expression in for loop");
-			}
-
-			this.index++;
-
-			forLoop.Body = this.ParseStmt();
-			result = forLoop;
-
-			if (this.index == this.tokens.Count ||
-				!this.tokens[this.index].Equals("end"))
-			{
-				throw new System.Exception("unterminated 'for' loop body");
-			}
-
-			this.index++;
-		}
-		else if (this.tokens[this.index] is string)
-		{
-			// assignment
-
-			Assign assign = new Assign();
-			assign.Ident = (string)this.tokens[this.index++];
-
-			if (this.index == this.tokens.Count ||
-				this.tokens[this.index] != Scanner.Equal)
-			{
-				throw new System.Exception("expected '='");
-			}
-
-			this.index++;
-            int endIndex = this.index;
-            while (this.tokens[endIndex] != Scanner.Semi)
+            if (currentToken.Equals("print"))
             {
-                endIndex++;
+                _Index++;
+                var endIndex = _Index;
+
+                while (_Tokens[endIndex] != Scanner.Semi)
+                {
+                    endIndex++;
+                }
+
+                var print = new Print { Expr = ParseExpression(endIndex) };
+                
+                result = print;
             }
-			assign.Expr = this.ParseExpr(endIndex);
-			result = assign;
-		}
-		else
-		{
-			throw new System.Exception("parse error at token " + this.index + ": " + this.tokens[this.index]);
-		}
+            else if (currentToken.Equals("var"))
+            {
+                _Index++;
+                var declareVar = new DeclareVariable();
 
-		if (this.index < this.tokens.Count && this.tokens[this.index] == Scanner.Semi)
-		{
-			this.index++;
+                if (_Index < _Tokens.Count && _Tokens[_Index] is string)
+                {
+                    declareVar.Ident = (string)_Tokens[_Index];
+                }
+                else
+                {
+                    throw new ParserException("Expected variable name after 'var'");
+                }
 
-			if (this.index < this.tokens.Count &&
-				!this.tokens[this.index].Equals("end"))
-			{
-				Sequence sequence = new Sequence();
-				sequence.First = result;
-				sequence.Second = this.ParseStmt();
-				result = sequence;
-			}
-		}
+                _Index++;
 
-        return result;
+                if (_Index == _Tokens.Count || _Tokens[_Index] != Scanner.Equal)
+                {
+                    throw new ParserException("Expected = after 'var ident'");
+                }
+
+                _Index++;
+
+                var endIndex = _Index;
+
+                while (_Tokens[endIndex] != Scanner.Semi)
+                {
+                    endIndex++;
+                }
+
+                declareVar.Expr = ParseExpression(endIndex);
+
+                result = declareVar;
+            }
+            else if (currentToken.Equals("read_int"))
+            {
+                _Index++;
+                var readInt = new ReadInt();
+
+                if (_Index < _Tokens.Count && _Tokens[_Index] is string)
+                {
+                    readInt.Ident = (string)_Tokens[_Index++];
+
+                    result = readInt;
+                }
+                else
+                {
+                    throw new ParserException("Expected variable name after 'read_int'");
+                }
+            }
+            else if (currentToken.Equals("for"))
+            {
+                _Index++;
+                var forLoop = new ForLoop();
+
+                if (_Index < _Tokens.Count && _Tokens[_Index] is string)
+                {
+                    forLoop.Ident = (string)_Tokens[_Index];
+                }
+                else
+                {
+                    throw new ParserException("Expected identifier after 'for'");
+                }
+
+                _Index++;
+
+                if (_Index == _Tokens.Count || _Tokens[_Index] != Scanner.Equal)
+                {
+                    throw new ParserException("Missing '=' in for loop");
+                }
+
+                _Index++;
+
+                forLoop.From = ParseExpression();
+
+                if (_Index == _Tokens.Count || !_Tokens[_Index].Equals("to"))
+                {
+                    throw new ParserException("Expected 'to' after for");
+                }
+
+                _Index++;
+
+                forLoop.To = ParseExpression();
+
+                if (_Index == _Tokens.Count || !_Tokens[_Index].Equals("do"))
+                {
+                    throw new ParserException("Expected 'do' after from expression in for loop");
+                }
+
+                _Index++;
+
+                forLoop.Body = ParseStatement();
+                result = forLoop;
+
+                if (_Index == _Tokens.Count || !_Tokens[_Index].Equals("end"))
+                {
+                    throw new ParserException("Unterminated 'for' loop body");
+                }
+
+                _Index++;
+            }
+            else if (_Tokens[_Index] is string)
+            {
+                var assign = new Assign { Ident = _Tokens[_Index++].ToString() };
+
+                if (_Index == _Tokens.Count || _Tokens[_Index] != Scanner.Equal)
+                {
+                    throw new ParserException("Expected '='");
+                }
+
+                _Index++;
+
+                var endIndex = _Index;
+
+                while (_Tokens[endIndex] != Scanner.Semi)
+                {
+                    endIndex++;
+                }
+
+                assign.Expr = ParseExpression(endIndex);
+
+                result = assign;
+            }
+            else
+            {
+                throw new System.Exception("Parse error at token " + _Index + ": " + _Tokens[_Index]);
+            }
+
+            if (_Index < _Tokens.Count && _Tokens[_Index] == Scanner.Semi)
+            {
+                _Index++;
+
+                if (_Index < _Tokens.Count && !_Tokens[_Index].Equals("end"))
+                {
+                    var sequence = new Sequence { First = result, Second = ParseStatement() };
+
+                    result = sequence;
+                }
+            }
+
+            return result;
+        }
+
+        private Expression ParseExpression(int endIndex)
+        {
+            if (_Index + 1 == endIndex)
+            {
+                return ParseExpression();
+            }
+
+            var  binExpr = new BinaryExpression { Left = ParseExpression() };
+
+            if (_Tokens[_Index] == Scanner.Add)
+            {
+                binExpr.Op = BinaryOperator.Add;
+            }
+            else if (_Tokens[_Index] == Scanner.Div)
+            {
+                binExpr.Op = BinaryOperator.Div;
+            }
+            else if (_Tokens[_Index] == Scanner.Mul)
+            {
+                binExpr.Op = BinaryOperator.Mul;
+            }
+            else if (_Tokens[_Index] == Scanner.Sub)
+            {
+                binExpr.Op = BinaryOperator.Sub;
+            }
+            else
+            {
+                throw new ParserException("Expected binary operation");
+            }
+
+            _Index++;
+
+            binExpr.Right = ParseExpression(endIndex);
+
+            return binExpr;
+        }
+        private Expression ParseExpression()
+        {
+            if (_Index == _Tokens.Count)
+            {
+                throw new ParserException("Unexpected EOF - Expected Expression");
+            }
+
+            if (_Tokens[_Index] is StringBuilder)
+            {
+                return new StringLiteral { Value = _Tokens[_Index++].ToString() };
+            }
+            
+            if (_Tokens[_Index] is int)
+            {
+                return new IntLiteral { Value = (int)_Tokens[_Index++] };
+            }
+            
+            if (_Tokens[_Index] is string)
+            {
+                return new Variable { Ident = _Tokens[_Index++].ToString() };
+            }
+
+            throw new ParserException("Expected string literal, integer literal, or variable");
+        }
     }
-
-    private Expr ParseExpr(int endIndex)
-    {
-        if (this.index + 1 == endIndex)
-        {
-            return ParseExpr();
-        }
-        BinExpr binExpr = new BinExpr();
-        binExpr.Left = ParseExpr();
-        if(this.tokens[this.index] == Scanner.Add)
-        {
-            binExpr.Op = BinOp.Add;
-        }
-        else if (this.tokens[this.index] == Scanner.Div)
-        {
-            binExpr.Op = BinOp.Div;
-        }
-        else if (this.tokens[this.index] == Scanner.Mul)
-        {
-            binExpr.Op = BinOp.Mul;
-        }
-        else if (this.tokens[this.index] == Scanner.Sub)
-        {
-            binExpr.Op = BinOp.Sub;
-        }
-        else
-        {
-            throw new System.Exception("expected binary operation");
-        }
-        this.index++;
-        binExpr.Right = ParseExpr(endIndex);
-        return binExpr;
-    }
-    private Expr ParseExpr()
-    {
-		if (this.index == this.tokens.Count)
-		{
-			throw new System.Exception("expected expression, got EOF");
-		}
-		if (this.tokens[this.index] is Text.StringBuilder)
-		{
-			string value = ((Text.StringBuilder)this.tokens[this.index++]).ToString();
-			StringLiteral stringLiteral = new StringLiteral();
-			stringLiteral.Value = value;
-			return stringLiteral;
-		}
-		else if (this.tokens[this.index] is int)
-		{
-			int intValue = (int)this.tokens[this.index++];
-			IntLiteral intLiteral = new IntLiteral();
-			intLiteral.Value = intValue;
-			return intLiteral;
-		}
-		else if (this.tokens[this.index] is string)
-		{
-			string ident = (string)this.tokens[this.index++];
-			Variable var = new Variable();
-			var.Ident = ident;
-			return var;
-		}
-		else
-		{
-			throw new System.Exception("expected string literal, int literal, or variable");
-		}
-    }
-
 }
