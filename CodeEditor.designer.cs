@@ -54,6 +54,9 @@ namespace Compiler
         this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
         this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.buildProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+        this.runProgramToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
         this.toolStrip = new System.Windows.Forms.ToolStrip();
         this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
         this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -143,7 +146,8 @@ namespace Compiler
         this.menuStrip.Dock = System.Windows.Forms.DockStyle.None;
         this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.editToolStripMenuItem});
+            this.editToolStripMenuItem,
+            this.buildToolStripMenuItem});
         this.menuStrip.Location = new System.Drawing.Point(0, 0);
         this.menuStrip.Name = "menuStrip";
         this.menuStrip.Size = new System.Drawing.Size(740, 24);
@@ -322,6 +326,31 @@ namespace Compiler
         this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
         this.selectAllToolStripMenuItem.Text = "Select &All";
         this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.SelectAll);
+        // 
+        // buildToolStripMenuItem
+        // 
+        this.buildToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.buildProgramToolStripMenuItem,
+            this.runProgramToolStripMenuItem});
+        this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
+        this.buildToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+        this.buildToolStripMenuItem.Text = "Build";
+        // 
+        // buildProgramToolStripMenuItem
+        // 
+        this.buildProgramToolStripMenuItem.Name = "buildProgramToolStripMenuItem";
+        this.buildProgramToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F7)));
+        this.buildProgramToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+        this.buildProgramToolStripMenuItem.Text = "Build program";
+        this.buildProgramToolStripMenuItem.Click += new System.EventHandler(this.buildProgramToolStripMenuItem_Click);
+        // 
+        // runProgramToolStripMenuItem
+        // 
+        this.runProgramToolStripMenuItem.Name = "runProgramToolStripMenuItem";
+        this.runProgramToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
+        this.runProgramToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+        this.runProgramToolStripMenuItem.Text = "Run program";
+        this.runProgramToolStripMenuItem.Click += new System.EventHandler(this.runProgramToolStripMenuItem_Click);
         // 
         // toolStrip
         // 
@@ -676,6 +705,9 @@ namespace Compiler
     private System.Windows.Forms.TabControl tabControl1;
     private System.Windows.Forms.TabPage tabPage2;
     private System.Windows.Forms.RichTextBox outputRichTextBox;
+    private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem buildProgramToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem runProgramToolStripMenuItem;
   }
 }
 

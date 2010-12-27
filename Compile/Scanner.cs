@@ -29,7 +29,6 @@ namespace Compiler.Compile
         public static readonly object Div = new object();
         public static readonly object Semi = new object();
         public static readonly object Equal = new object();
-
         #endregion
 
         private void Scan(TextReader input)
