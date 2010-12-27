@@ -49,9 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compile\Declarations.cs" />
     <Compile Include="GUI\CodeCompletionDataProvider.cs" />
     <Compile Include="GUI\CodeFoldingStrategy.cs" />
-    <Compile Include="Compile\Ast.cs" />
     <Compile Include="Compile\Generator.cs" />
     <Compile Include="Compile\Parser.cs" />
     <Compile Include="Compile\Scanner.cs" />
