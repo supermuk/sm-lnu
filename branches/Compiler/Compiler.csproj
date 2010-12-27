@@ -99,12 +99,13 @@
     <Content Include="Libs\DigitalRune.Windows.TextEditor.dll" />
     <Content Include="Libs\DigitalRune.Windows.TextEditor.pdb" />
     <Content Include="Libs\DigitalRune.Windows.TextEditor.xml" />
+    <None Include="Resources\build.png" />
     <Content Include="Resources\field.png" />
     <Content Include="Resources\method.png" />
+    <None Include="Resources\run.png" />
+    <None Include="samples\avg.smp" />
     <Content Include="Resources\TextFile.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="samples\" />
+    <Content Include="samples\grammar.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
