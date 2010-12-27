@@ -1,0 +1,12 @@
+D:\TopSecret\4\Compiler\bin\Debug\Compiler.exe
+D:\TopSecret\4\Compiler\bin\Debug\Compiler.pdb
+D:\TopSecret\4\Compiler\bin\Debug\DigitalRune.Windows.TextEditor.dll
+D:\TopSecret\4\Compiler\bin\Debug\DigitalRune.Windows.TextEditor.pdb
+D:\TopSecret\4\Compiler\bin\Debug\DigitalRune.Windows.TextEditor.xml
+D:\TopSecret\4\Compiler\obj\Debug\ResolveAssemblyReference.cache
+D:\TopSecret\4\Compiler\obj\Debug\Compiler.Properties.Resources.resources
+D:\TopSecret\4\Compiler\obj\Debug\Compiler.csproj.GenerateResource.Cache
+D:\TopSecret\4\Compiler\obj\Debug\Compiler.exe
+D:\TopSecret\4\Compiler\obj\Debug\Compiler.pdb
+D:\TopSecret\4\Compiler\obj\Debug\Compiler.CodeEditor.resources
+D:\TopSecret\4\Compiler\obj\Debug\Compiler.Resources.resources
