@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,23 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="icon2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\icon2.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\icon3.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\icon4.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\icon5.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon6" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\icon6.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\icon7.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAMsxl4AAAAAAyzGXgAAAAAJqhqeArRVfgn6Gn4AAAAAAAAAAAAAAAAAAAAAB+ZFDgzsS64AAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADLztP/LqvZ/ypifP+8vMD/AAAAAAAAAACOd2b/y76y/8Gv
+        of8AAAAAAAAAAAAAAABL0nj/AAAAAAAAAAAAAAAAAAAAALzO1/8srt3/QnaP/7iysf+QeWf/18q//8Kw
+        ov8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwtbf/zelzf+JcF//48u6/8Sy
+        pP8AAAAAAAAAAAAAAAAAAAAAAAAAAEvSeP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7cWT/1MK2/1KD
+        mf8AAAAAAAAAAAAAAACjjn//6uXi4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACFbFr/3MvA/62p
+        oP8uqNX/R3iO/5mBcf+jjn//4tvU/5Z+beAAAAAAaKfA/2WGnf9lhp3/hY2T/5V/cf+WgHD/3dXO/8Wy
+        pP8AAAAAq7a7/6Khn//h1Mz/xLOm/6WPfv/g2dPgaKfA/0zD6f+O0+P/Z8Le/56LfP+3r6b/u6aX/56G
+        dv8AAAAAAAAAAAAAAADArqD/AAAAAMi6r/+chXP/AAAAAFOauP9QzvT/oez3/3La9f+3oZD/AKfs/66v
+        rv+ji3n/AAAAAAAAAADUycL/po99/8CwpP+Xfmv/1cvD/wAAAABYnbr/UM70/5/q9v9x2PL/GrXt/3Sq
+        u/+3oZD/y7qu/+ji3f+tlIH/n4Vy/490YP+Xfmv/187H/wAAAAAAAAAAWZ67/1HO9P+g6vb/cdjz/xq1
+        7f8Ao+f/LHOb/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABL0nj/AAAAAFmeu/9RzvT/oOr2/3LY
+        8/8btez/AKPm/y1zm/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYnrz/UM30/53p
+        9v9r1fL/D7Ds/wCf5v8sc5z/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEvSeP8AAAAAXKC8/3ni
+        +/+t8Pj/keT2/1HK8v8puvD/L3Wd/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIq9
+        zv+19fr/zP///9P////O////sfP6/3Kjtv8AAAAAS9J4/wAAAABL0nj/AAAAAEvSeP8AAAAAS9J4/wAA
+        AAAAAAAAir3O/4q9zv+Kvc7/ir3O/4q9zv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//
+        AAD//wAA//8AAA==
+</value>
   </data>
 </root>

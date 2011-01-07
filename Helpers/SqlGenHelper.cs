@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DBMS
 {
-    public class SqlHelper
+    public class SqlGenHelper
     {
         public static string GenerateSqlInserts(ArrayList aryColumns, DataTable dtTable, string sTargetTableName)
         {
