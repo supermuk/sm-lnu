@@ -94,6 +94,7 @@
     <None Include="images\icon5.ico" />
     <None Include="images\icon6.ico" />
     <None Include="images\icon7.ico" />
+    <None Include="images\execute.png" />
     <Content Include="Libs\Crom.Controls.dll" />
     <Content Include="Libs\Microsoft.ApplicationBlocks.Data.dll" />
   </ItemGroup>

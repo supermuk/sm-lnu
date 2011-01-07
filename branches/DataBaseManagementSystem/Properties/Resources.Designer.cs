@@ -60,6 +60,13 @@ namespace DBMS.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap execute {
+            get {
+                object obj = ResourceManager.GetObject("execute", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Icon icon2 {
             get {
                 object obj = ResourceManager.GetObject("icon2", resourceCulture);
