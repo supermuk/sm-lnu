@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Crom.Controls;
 using Crom.Controls.Docking;
 using DBMS.Properties;
+using System.Collections;
 
 namespace DBMS
 {
@@ -26,11 +27,11 @@ namespace DBMS
         {
             InitializeComponent();
 
-            dockContainer.DockForm(AddDockableForm(dataDataGrid, "Rows", (Icon)Resources.icon6), DockStyle.Right, zDockMode.Outer);
+            dockContainer.DockForm(AddDockableForm(dataGridView, "Rows", (Icon)Resources.icon6), DockStyle.Right, zDockMode.Outer);
             dockContainer.DockForm(AddDockableForm(outputRichTextBox, "Output", (Icon)Resources.icon5), DockStyle.Right, zDockMode.Outer);
-            dockContainer.DockForm(AddDockableForm(tableLayoutPanel1, "Connection string", (Icon)Resources.icon2), DockStyle.Top, zDockMode.Inner);
+            dockContainer.DockForm(AddDockableForm(connectionSplitContainer, "Connection string", (Icon)Resources.icon2), DockStyle.Top, zDockMode.Inner);
             dockContainer.DockForm(AddDockableForm(tablesListBox, "Tabels", (Icon)Resources.icon3), DockStyle.Top, zDockMode.Inner);
-            dockContainer.DockForm(AddDockableForm(sqlRichTextBox, "Sql statement", (Icon)Resources.icon7), DockStyle.Top, zDockMode.Inner);
+            dockContainer.DockForm(AddDockableForm(sqlSplitContainer, "Sql statement", (Icon)Resources.icon7), DockStyle.Top, zDockMode.Inner);
         }
 
         private void Initialize()
@@ -65,10 +66,6 @@ namespace DBMS
             Form form = new Form();
             form.Text = name;
             form.Icon = icon;
-            if (control == tableLayoutPanel1)
-            {
-                form.MaximumSize = new Size(400, 150);
-            }
             form.Controls.Add(control);
             return dockContainer.Add(form, Crom.Controls.Docking.zAllowedDock.All, Guid.NewGuid());
         }
@@ -82,22 +79,40 @@ namespace DBMS
             tablesListBox.DisplayMember = "TABLE_NAME";
             tablesListBox.ValueMember = "TABLE_NAME";
             tablesListBox.DataSource = dt;
-            tablesListBox.Invalidate();
         }
 
         private void PrintOutput(string message, PrintType type)
         {
-            outputRichTextBox.Text = 
-                DateTime.Now.ToShortTimeString() 
+            string str =
+                DateTime.Now.ToLongTimeString()
                 + " >>> "
-                + type.ToString() + ": "
-                + message + "\r\n" 
-                + outputRichTextBox.Text;
+                + type.ToString() + ": ";
+            RichTextBox rtb = new RichTextBox();
+            rtb.Text = str + message + "\r\n";
+
+
+            rtb.Select(0, str.Length);
+            switch (type)
+            {
+                case PrintType.Error:
+                    rtb.SelectionColor = Color.Red;
+                    break;
+                case PrintType.Execute:
+                    rtb.SelectionColor = Color.Green;
+                    break;
+                case PrintType.Warning:
+                    rtb.SelectionColor = Color.DarkGoldenrod;
+                    break;
+            }
+
+            rtb.SelectAll();
+            outputRichTextBox.Select(0, 0);
+            outputRichTextBox.SelectedRtf = rtb.SelectedRtf;
         }
 
-        private void Execute(string sql)
+        private void Execute(string query)
         {
-            if (sql.Trim() == string.Empty)
+            if (query.Trim() == string.Empty)
             {
                 PrintOutput("SQL statement can't be empty", PrintType.Warning);
                 return;
@@ -105,12 +120,12 @@ namespace DBMS
 
             try
             {
-                PrintOutput(sql, PrintType.Execute);
+                PrintOutput(query, PrintType.Execute);
                 Cursor.Current = Cursors.WaitCursor;
 
-                mDataTable = DBHelper.LoadDataTable(mConnectionString, mDatabaseName, sql);
-                dataDataGrid.DataSource = mDataTable;
-
+                mDataTable = DBHelper.LoadDataTable(mConnectionString, mDatabaseName, query);
+                dataGridView.DataSource = mDataTable;
+                //dataDataGrid.DataSource = mDataTable;
                 //chklstIncludeFields.Items.Clear();
                 //foreach (DataColumn col in m_TableInfo.Columns)
                 {
@@ -131,7 +146,74 @@ namespace DBMS
 
         private void UpdateAll()
         {
-            tablesListBox.Refresh();
+        }
+
+        private void GenerateSqlStatements()
+        {
+            // clear the string member
+            string sql = string.Empty;
+
+            // create an array of all the columns that are to be included
+            ArrayList columns = new ArrayList();
+            foreach (DataColumn col in mDataTable.Columns)
+            {
+                columns.Add(col.ColumnName);
+            }
+            if (columns.Count <= 0)
+            {
+                MessageBox.Show("No columns selected!  Please check/select some columns to include!");
+                return;
+            }
+
+            if (mTableName == string.Empty)
+            {
+                MessageBox.Show("No valid target table name!  Please enter a table name to be used in the SQL statements!");
+                return;
+            }
+
+            var dt = DBHelper.GetPrimaryKey(mConnectionString, mDatabaseName, mTableName);
+            ArrayList keyColumns = new ArrayList();
+            foreach (DataRow row in dt.Rows)
+            {
+                keyColumns.Add(row["name"].ToString());
+            }
+
+            sql = SqlGenHelper.GenerateSqlUpdates(columns, keyColumns, mDataTable, mTableName);
+            sqlRichTextBox.Text = sql;
+        }
+
+        private void GenerateUpdate(int rowIndex, int colIndex)
+        {
+            // clear the string member
+            string sql = string.Empty;
+
+            // create an array of all the columns that are to be included
+            ArrayList columns = new ArrayList();
+            foreach (DataColumn col in mDataTable.Columns)
+            {
+                columns.Add(col.ColumnName);
+            }
+            if (columns.Count <= 0)
+            {
+                MessageBox.Show("No columns selected!  Please check/select some columns to include!");
+                return;
+            }
+
+            if (mTableName == string.Empty)
+            {
+                MessageBox.Show("No valid target table name!  Please enter a table name to be used in the SQL statements!");
+                return;
+            }
+
+            var dt = DBHelper.GetPrimaryKey(mConnectionString, mDatabaseName, mTableName);
+            ArrayList keyColumns = new ArrayList();
+            foreach (DataRow row in dt.Rows)
+            {
+                keyColumns.Add(row["name"].ToString());
+            }
+
+            sql = SqlGenHelper.GenerateSqlUpdates(columns, keyColumns, mDataTable, mTableName, rowIndex);
+            sqlRichTextBox.Text = sql;
         }
 
         #region Events
@@ -151,20 +233,37 @@ namespace DBMS
 
         private void tablesListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            mTableName = tablesListBox.SelectedValue.ToString();
-            Execute("SELECT * FROM " + mTableName);
+            if (tablesListBox.SelectedValue != null)
+            {
+                mTableName = tablesListBox.SelectedValue.ToString();
+                Execute("SELECT * FROM " + mTableName);
+            }
 
             //dgTableInfo.DataSource = null;
             //UpdateControls();
         }
 
-        #endregion
-
         private void connectButton_Click(object sender, EventArgs e)
         {
             Initialize();
         }
+
+        private void executeButton_Click(object sender, EventArgs e)
+        {
+            Execute(sqlRichTextBox.Text);
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GenerateSqlStatements();
+        }
+
+        private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            GenerateUpdate(e.RowIndex, e.ColumnIndex);
+        }
+        
+        #endregion
+
 
     }
 }

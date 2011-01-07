@@ -94,130 +94,132 @@ namespace DBMS
             return sSqlInserts;
         }
 
+        public static string GenerateSqlUpdates(ArrayList aryColumns, ArrayList aryWhereColumns, DataTable dtTable, string sTargetTableName, int rowIndex)
+        {
+            DataRow drow = dtTable.Rows[rowIndex];
+            // VALUES clause:  loop thru each column, and include the value if the column is in the array
+            StringBuilder sbValues = new StringBuilder(string.Empty);
+
+            foreach (string col in aryColumns)
+            {
+                StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
+                if (sbValues.ToString() != string.Empty)
+                    sbValues.Append(", ");
+
+                // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
+                string sType = string.Empty;
+                try
+                {
+                    sType = drow[col].GetType().ToString();
+                    switch (sType.Trim().ToLower())
+                    {
+                        case "system.boolean":
+                            sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
+                            break;
+
+                        case "system.string":
+                            sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                            break;
+
+                        case "system.datetime":
+                            string sDateTime = QuoteSQLString(drow[col]);
+                            if (TypeHelper.IsDateTime(sDateTime) == true)
+                                sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
+                            else
+                                sDateTime = string.Empty;
+                            sbNewValue.Append(string.Format("'{0}'", sDateTime));
+                            break;
+
+                        case "system.byte[]":
+                            sbNewValue.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
+                            break;
+
+                        default:
+                            if (drow[col] == System.DBNull.Value)
+                                sbNewValue.Append("NULL");
+                            else
+                                sbNewValue.Append(Convert.ToString(drow[col]));
+                            break;
+                    }
+                }
+                catch
+                {
+                    sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                }
+
+                sbValues.Append(sbNewValue.ToString());
+            }
+
+            // WHERE clause:  loop thru each column, and include the value if the column is in the array
+            StringBuilder sbWhereValues = new StringBuilder(string.Empty);
+            foreach (string col in aryWhereColumns)
+            {
+                StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
+                if (sbWhereValues.ToString() != string.Empty)
+                    sbWhereValues.Append(" AND ");
+
+                // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
+                string sType = string.Empty;
+                try
+                {
+                    sType = drow[col].GetType().ToString();
+                    switch (sType.Trim().ToLower())
+                    {
+                        case "system.boolean":
+                            sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
+                            break;
+
+                        case "system.string":
+                            sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                            break;
+
+                        case "system.datetime":
+                            string sDateTime = QuoteSQLString(drow[col]);
+                            if (TypeHelper.IsDateTime(sDateTime) == true)
+                                sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
+                            else
+                                sDateTime = string.Empty;
+                            sbNewValue.Append(string.Format("'{0}'", sDateTime));
+                            break;
+
+                        case "system.byte[]":
+                            sbNewValue.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
+                            break;
+
+                        default:
+                            if (drow[col] == System.DBNull.Value)
+                                sbNewValue.Append("NULL");
+                            else
+                                sbNewValue.Append(Convert.ToString(drow[col]));
+                            break;
+                    }
+                }
+                catch
+                {
+                    sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                }
+
+                sbWhereValues.Append(sbNewValue.ToString());
+            }
+
+            // UPDATE table SET col1 = 3, col2 = 4 WHERE (select cols)
+            // write the line out to the stringbuilder
+            string snewsql = string.Format("UPDATE [{0}] SET {1} WHERE {2};", sTargetTableName, sbValues.ToString(), sbWhereValues.ToString());
+            return snewsql;
+        }
         public static string GenerateSqlUpdates(ArrayList aryColumns, ArrayList aryWhereColumns, DataTable dtTable, string sTargetTableName)
         {
-            string sSqlUpdates = string.Empty;
+                        string sSqlUpdates = string.Empty;
             StringBuilder sbSqlStatements = new StringBuilder(string.Empty);
             StringBuilder sbColumns = new StringBuilder(string.Empty);
 
             // UPDATE table SET col1 = 3, col2 = 4 WHERE (select cols)
             // loop thru each record of the datatable
-            foreach (DataRow drow in dtTable.Rows)
+            for(int i = 0; i < dtTable.Rows.Count; i++)
             {
-                // VALUES clause:  loop thru each column, and include the value if the column is in the array
-                StringBuilder sbValues = new StringBuilder(string.Empty);                
-
-                foreach (string col in aryColumns)
-                {
-                    StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
-                    if (sbValues.ToString() != string.Empty)
-                        sbValues.Append(", ");
-
-                    // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
-                    string sType = string.Empty;
-                    try
-                    {
-                        sType = drow[col].GetType().ToString();
-                        switch (sType.Trim().ToLower())
-                        {
-                            case "system.boolean":
-                                sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
-                                break;
-
-                            case "system.string":
-                                sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                                break;
-
-                            case "system.datetime":
-                                string sDateTime = QuoteSQLString(drow[col]);
-                                if (TypeHelper.IsDateTime(sDateTime) == true)
-                                    sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
-                                else
-                                    sDateTime = string.Empty;
-                                sbNewValue.Append(string.Format("'{0}'", sDateTime));                                
-                                break;
-
-                            case "system.byte[]":
-                                sbNewValue.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
-                                break;   
-
-                            default:
-                                if (drow[col] == System.DBNull.Value)
-                                    sbNewValue.Append("NULL");
-                                else
-                                    sbNewValue.Append(Convert.ToString(drow[col]));
-                                break;
-                        }
-                    }
-                    catch
-                    {
-                        sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                    }
-
-                    sbValues.Append(sbNewValue.ToString());
-                }
-
-                // WHERE clause:  loop thru each column, and include the value if the column is in the array
-                StringBuilder sbWhereValues = new StringBuilder(string.Empty);       
-                foreach (string col in aryWhereColumns)
-                {
-                    StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
-                    if (sbWhereValues.ToString() != string.Empty)
-                        sbWhereValues.Append(" AND ");    
-
-                    // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
-                    string sType = string.Empty;
-                    try
-                    {
-                        sType = drow[col].GetType().ToString();
-                        switch (sType.Trim().ToLower())
-                        {
-                            case "system.boolean":
-                                sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
-                                break;
-
-                            case "system.string":
-                                sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                                break;
-
-                            case "system.datetime":
-                                string sDateTime = QuoteSQLString(drow[col]);
-                                if (TypeHelper.IsDateTime(sDateTime) == true)
-                                    sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
-                                else
-                                    sDateTime = string.Empty;
-                                sbNewValue.Append(string.Format("'{0}'", sDateTime));
-                                break;
-
-                            case "system.byte[]":
-                                sbNewValue.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
-                                break;  
-
-                            default:
-                                if (drow[col] == System.DBNull.Value)
-                                    sbNewValue.Append("NULL");
-                                else
-                                    sbNewValue.Append(Convert.ToString(drow[col]));
-                                break;
-                        }
-                    }
-                    catch
-                    {
-                        sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                    }
-
-                    sbWhereValues.Append(sbNewValue.ToString());
-                }
-
-                // UPDATE table SET col1 = 3, col2 = 4 WHERE (select cols)
-                // write the line out to the stringbuilder
-                string snewsql = string.Format("UPDATE [{0}] SET {1} WHERE {2};", sTargetTableName, sbValues.ToString(), sbWhereValues.ToString());
-                sbSqlStatements.Append(snewsql);
-                sbSqlStatements.AppendLine();
-                sbSqlStatements.AppendLine();
+                sbSqlStatements.Append(GenerateSqlUpdates(aryColumns, aryWhereColumns, dtTable, sTargetTableName, i));
             }
-
-            sSqlUpdates = sbSqlStatements.ToString();
+                        sSqlUpdates = sbSqlStatements.ToString();
             return sSqlUpdates;
         }
 

@@ -140,6 +140,17 @@ namespace DBMS
             return dt;
         }
 
+        public static DataTable GetPrimaryKey(string sConnection, string databaseName, string tableName)
+        {
+            string query =
+                "SELECT [name]  FROM syscolumns WHERE [id] IN (SELECT [id] FROM sysobjects WHERE [name] = '"
+                + tableName
+                + "')AND colid IN (SELECT SIK.colid FROM sysindexkeys SIK JOIN sysobjects SO ON SIK.[id] = SO.[id] WHERE SIK.indid = 1 AND SO.[name] = '"
+                + tableName
+                +"')";
+            return LoadDataTable(sConnection, databaseName, query);
+        }
+
         public static DataTable LoadDataTable(string sConnection, string sDatabase, string sQuery)
         {
             SqlConnection connection = null;
