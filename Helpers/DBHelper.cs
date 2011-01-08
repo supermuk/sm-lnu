@@ -120,7 +120,18 @@ namespace DBMS
                 +"')";
             return LoadDataTable(connection, databaseName, query);
         }
+        public static int Execute(string connection, string database, string query)
+        {
+            SqlConnection conn = null;
 
+            conn = GetConnection(connection, database);
+
+            int rowsCount = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, query);
+            conn.Close();
+            conn.Dispose();
+
+            return rowsCount;
+        }
         public static DataTable LoadDataTable(string connection, string database, string sQuery)
         {
             SqlConnection conn = null;
