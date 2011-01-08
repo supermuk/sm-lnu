@@ -64,10 +64,47 @@ namespace DBMS
                 }
             }
             StringBuilder query = new StringBuilder("");
-            query.Append(string.Format("INSERT INTO [{0}]({1}) ", tableName, cols.ToString()));
+            query.Append(string.Format("INSERT INTO [{0}] ({1}) ", tableName, cols.ToString()));
             query.AppendLine();
             query.Append('\t');
             query.Append(string.Format("VALUES({0});", values.ToString()));
+            query.AppendLine();
+            query.AppendLine();
+            return query.ToString();
+        }
+
+        public static string GenerateSqlInsert(string[] columns, object[] values, DataTable table, string tableName, int rowIndex)
+        {
+            StringBuilder cols = new StringBuilder("");
+
+            for(int i = 0; i < columns.Length; i++)
+            {
+                if (cols.ToString() != "")
+                    cols.Append(", ");
+
+                cols.Append("[" + columns[i] + "]");
+            }
+            //DataRow drow = table.Rows[rowIndex];
+            StringBuilder vals = new StringBuilder("");
+            for(int i = 0; i < values.Length; i++)
+            {
+                if (vals.ToString() != "")
+                    vals.Append(", ");
+
+                try
+                {
+                    vals.Append(TypeHelper.GetType(values[i]));
+                }
+                catch
+                {
+                    vals.Append(string.Format("'{0}'", QuoteSQLString(values[i])));
+                }
+            }
+            StringBuilder query = new StringBuilder("");
+            query.Append(string.Format("INSERT INTO [{0}] ({1}) ", tableName, cols.ToString()));
+            query.AppendLine();
+            query.Append('\t');
+            query.Append(string.Format("VALUES({0});", vals.ToString()));
             query.AppendLine();
             query.AppendLine();
             return query.ToString();
@@ -149,6 +186,25 @@ namespace DBMS
             return string.Format("DELETE FROM [{0}] WHERE {1};", tableName, values.ToString());
         }
 
+        public static string GenerateCreateTable(ColumnModel[] columns, string tableName, string primaryKey)
+        {
+            string query = "";
+            foreach (ColumnModel col in columns)
+            {
+                if (query != "")
+                {
+                    query += ",\r\n";
+                }
+                query += "[" + col.Name + "] " + col.Type + (col.AllowNull ? "" : " NOT NULL");
+                if (col.Name == primaryKey)
+                {
+                    query += " PRIMARY KEY";
+                }
+            }
+
+            query = "CREATE TABLE " + tableName + " (\r\n" + query + "\r\n)";
+            return query;
+        }
 
         public static string QuoteSQLString(string str)
         {

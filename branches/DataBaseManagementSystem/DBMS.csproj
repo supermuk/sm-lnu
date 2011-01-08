@@ -50,6 +50,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColumnModel.cs" />
+    <Compile Include="CreateTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateTable.Designer.cs">
+      <DependentUpon>CreateTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Enums.cs" />
     <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="MainForm.cs">
@@ -60,6 +67,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CreateTable.resx">
+      <DependentUpon>CreateTable.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
