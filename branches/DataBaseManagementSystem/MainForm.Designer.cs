@@ -197,6 +197,7 @@
             this.dataGridView.Size = new System.Drawing.Size(240, 150);
             this.dataGridView.TabIndex = 70;
             this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
+            this.dataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView_RowsRemoved);
             // 
             // MainForm
             // 

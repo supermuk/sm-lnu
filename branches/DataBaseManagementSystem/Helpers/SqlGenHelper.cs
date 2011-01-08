@@ -10,296 +10,154 @@ namespace DBMS
 {
     public class SqlGenHelper
     {
-        public static string GenerateSqlInserts(ArrayList aryColumns, DataTable dtTable, string sTargetTableName)
+        public static string GenerateSql(string[] columns, string[] whereColumns, DataTable table, string tableName, QueryType type)
         {
-            string sSqlInserts = string.Empty;
-            StringBuilder sbSqlStatements = new StringBuilder(string.Empty);
-            StringBuilder sbColumns = new StringBuilder(string.Empty);
+            StringBuilder query = new StringBuilder("");
 
-            // create the columns portion of the INSERT statement						            
-            foreach (string colname in aryColumns)
+            for(int i = 0; i < table.Rows.Count; i++)
             {
-                if (sbColumns.ToString() != string.Empty)
-                    sbColumns.Append(", ");
-
-                sbColumns.Append("[" + colname + "]");
-            }
-
-            // loop thru each record of the datatable
-            foreach (DataRow drow in dtTable.Rows)
-            {
-                // loop thru each column, and include the value if the column is in the array
-                StringBuilder sbValues = new StringBuilder(string.Empty);
-                foreach (string col in aryColumns)
+                string s = "";
+                switch (type)
                 {
-                    if (sbValues.ToString() != string.Empty)
-                        sbValues.Append(", ");
-
-                    // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
-                    string sType = string.Empty;
-                    try
-                    {
-                        sType = drow[col].GetType().ToString();
-                        switch (sType.Trim().ToLower())
-                        {
-                            case "system.boolean":
-                                sbValues.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
-                                break;
-
-                            case "system.string":
-                                sbValues.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                                break;
-
-                            case "system.datetime":
-                                string sDateTime = QuoteSQLString(drow[col]);
-                                if (TypeHelper.IsDateTime(sDateTime) == true)
-                                    sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
-                                else
-                                    sDateTime = string.Empty;
-                                sbValues.Append(string.Format("'{0}'", sDateTime));
-                                break;
-
-                            case "system.byte[]":
-                                sbValues.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
-                                break;                                
-
-                            default:
-                                if (drow[col] == System.DBNull.Value)
-                                    sbValues.Append("NULL");
-                                else
-                                    sbValues.Append(Convert.ToString(drow[col]));
-                                break;
-                        }
-                    }
-                    catch
-                    {
-                        sbValues.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                    }
+                    case QueryType.Insert:
+                        s = GenerateSqlInsert(columns, table, tableName, i);
+                        break;
+                    case QueryType.Delete:
+                        s = GenerateSqlDelete(columns, table, tableName, i);
+                        break;
+                    case QueryType.Update:
+                        s = GenerateSqlUpdate(columns, whereColumns, table, tableName, i);
+                        break;
                 }
-
-                //   INSERT INTO Tabs(Name) 
-                //      VALUES('Referrals')
-                // write the insert line out to the stringbuilder
-                string snewsql = string.Format("INSERT INTO [{0}]({1}) ", sTargetTableName, sbColumns.ToString());
-                sbSqlStatements.Append(snewsql);
-                sbSqlStatements.AppendLine();
-                sbSqlStatements.Append('\t');
-                snewsql = string.Format("VALUES({0});", sbValues.ToString());
-                sbSqlStatements.Append(snewsql);
-                sbSqlStatements.AppendLine();
-                sbSqlStatements.AppendLine();
+                query.Append(s);
+                query.AppendLine();
             }
 
-            sSqlInserts = sbSqlStatements.ToString();
-            return sSqlInserts;
+            return query.ToString();;
         }
 
-        public static string GenerateSqlUpdates(ArrayList aryColumns, ArrayList aryWhereColumns, DataTable dtTable, string sTargetTableName, int rowIndex)
+        public static string GenerateSqlInsert(string[] columns, DataTable table, string tableName, int rowIndex)
         {
-            DataRow drow = dtTable.Rows[rowIndex];
-            // VALUES clause:  loop thru each column, and include the value if the column is in the array
-            StringBuilder sbValues = new StringBuilder(string.Empty);
+            StringBuilder cols = new StringBuilder("");
 
-            foreach (string col in aryColumns)
+            foreach (string colname in columns)
             {
-                StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
-                if (sbValues.ToString() != string.Empty)
-                    sbValues.Append(", ");
+                if (cols.ToString() != "")
+                    cols.Append(", ");
 
-                // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
-                string sType = string.Empty;
+                cols.Append("[" + colname + "]");
+            }
+            DataRow drow = table.Rows[rowIndex];
+            StringBuilder values = new StringBuilder("");
+            foreach (string col in columns)
+            {
+                if (values.ToString() != "")
+                    values.Append(", ");
+
                 try
                 {
-                    sType = drow[col].GetType().ToString();
-                    switch (sType.Trim().ToLower())
-                    {
-                        case "system.boolean":
-                            sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
-                            break;
-
-                        case "system.string":
-                            sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                            break;
-
-                        case "system.datetime":
-                            string sDateTime = QuoteSQLString(drow[col]);
-                            if (TypeHelper.IsDateTime(sDateTime) == true)
-                                sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
-                            else
-                                sDateTime = string.Empty;
-                            sbNewValue.Append(string.Format("'{0}'", sDateTime));
-                            break;
-
-                        case "system.byte[]":
-                            sbNewValue.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
-                            break;
-
-                        default:
-                            if (drow[col] == System.DBNull.Value)
-                                sbNewValue.Append("NULL");
-                            else
-                                sbNewValue.Append(Convert.ToString(drow[col]));
-                            break;
-                    }
+                    values.Append(TypeHelper.GetType(drow[col]));
                 }
                 catch
                 {
-                    sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                    values.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                }
+            }
+            StringBuilder query = new StringBuilder("");
+            query.Append(string.Format("INSERT INTO [{0}]({1}) ", tableName, cols.ToString()));
+            query.AppendLine();
+            query.Append('\t');
+            query.Append(string.Format("VALUES({0});", values.ToString()));
+            query.AppendLine();
+            query.AppendLine();
+            return query.ToString();
+        }
+
+        public static string GenerateSqlUpdate(string[] columns, string[] whereColumns, DataTable table, string tableName, int rowIndex)
+        {
+            DataRow drow = table.Rows[rowIndex];
+            StringBuilder values = new StringBuilder("");
+
+            foreach (string col in columns)
+            {
+                StringBuilder newValues = new StringBuilder("[" + col + "] = ");
+                if (values.ToString() != "")
+                {
+                    values.Append(", ");
                 }
 
-                sbValues.Append(sbNewValue.ToString());
-            }
-
-            // WHERE clause:  loop thru each column, and include the value if the column is in the array
-            StringBuilder sbWhereValues = new StringBuilder(string.Empty);
-            foreach (string col in aryWhereColumns)
-            {
-                StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
-                if (sbWhereValues.ToString() != string.Empty)
-                    sbWhereValues.Append(" AND ");
-
-                // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
-                string sType = string.Empty;
                 try
                 {
-                    sType = drow[col].GetType().ToString();
-                    switch (sType.Trim().ToLower())
-                    {
-                        case "system.boolean":
-                            sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
-                            break;
-
-                        case "system.string":
-                            sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                            break;
-
-                        case "system.datetime":
-                            string sDateTime = QuoteSQLString(drow[col]);
-                            if (TypeHelper.IsDateTime(sDateTime) == true)
-                                sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
-                            else
-                                sDateTime = string.Empty;
-                            sbNewValue.Append(string.Format("'{0}'", sDateTime));
-                            break;
-
-                        case "system.byte[]":
-                            sbNewValue.Append(string.Format("'{0}'", Convert.ToBase64String((byte[])drow[col])));
-                            break;
-
-                        default:
-                            if (drow[col] == System.DBNull.Value)
-                                sbNewValue.Append("NULL");
-                            else
-                                sbNewValue.Append(Convert.ToString(drow[col]));
-                            break;
-                    }
+                    newValues.Append(TypeHelper.GetType(drow[col]));
                 }
                 catch
                 {
-                    sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                    newValues.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
                 }
 
-                sbWhereValues.Append(sbNewValue.ToString());
+                values.Append(newValues.ToString());
             }
 
-            // UPDATE table SET col1 = 3, col2 = 4 WHERE (select cols)
-            // write the line out to the stringbuilder
-            string snewsql = string.Format("UPDATE [{0}] SET {1} WHERE {2};", sTargetTableName, sbValues.ToString(), sbWhereValues.ToString());
-            return snewsql;
-        }
-        public static string GenerateSqlUpdates(ArrayList aryColumns, ArrayList aryWhereColumns, DataTable dtTable, string sTargetTableName)
-        {
-                        string sSqlUpdates = string.Empty;
-            StringBuilder sbSqlStatements = new StringBuilder(string.Empty);
-            StringBuilder sbColumns = new StringBuilder(string.Empty);
-
-            // UPDATE table SET col1 = 3, col2 = 4 WHERE (select cols)
-            // loop thru each record of the datatable
-            for(int i = 0; i < dtTable.Rows.Count; i++)
+            StringBuilder whereValues = new StringBuilder("");
+            foreach (string col in whereColumns)
             {
-                sbSqlStatements.Append(GenerateSqlUpdates(aryColumns, aryWhereColumns, dtTable, sTargetTableName, i));
-            }
-                        sSqlUpdates = sbSqlStatements.ToString();
-            return sSqlUpdates;
-        }
-
-        public static string GenerateSqlDeletes(ArrayList aryColumns, DataTable dtTable, string sTargetTableName)
-        {
-            string sSqlDeletes = string.Empty;
-            StringBuilder sbSqlStatements = new StringBuilder(string.Empty);
-
-            // loop thru each record of the datatable
-            foreach (DataRow drow in dtTable.Rows)
-            {
-                // loop thru each column, and include the value if the column is in the array
-                StringBuilder sbValues = new StringBuilder(string.Empty);                
-                foreach (string col in aryColumns)
-                {                    
-                    StringBuilder sbNewValue = new StringBuilder("[" + col + "] = ");
-
-                    if (sbValues.ToString() != string.Empty)
-                        sbValues.Append(" AND ");    
-
-                    // need to do a case to check the column-value types(quote strings(check for dups first), convert bools)
-                    string sType = string.Empty;
-                    try
-                    {
-                        sType = drow[col].GetType().ToString();
-                        switch (sType.Trim().ToLower())
-                        {
-                            case "system.boolean":
-                                sbNewValue.Append((Convert.ToBoolean(drow[col]) == true ? "1" : "0"));
-                                break;
-
-                            case "system.string":
-                                sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                                break;
-
-                            case "system.datetime":
-                                string sDateTime = QuoteSQLString(drow[col]);
-                                if (TypeHelper.IsDateTime(sDateTime) == true)
-                                    sDateTime = System.DateTime.Parse(sDateTime).ToString("yyyy-MM-dd HH:mm:ss");
-                                else
-                                    sDateTime = string.Empty;
-                                sbNewValue.Append(string.Format("'{0}'", sDateTime));
-                                break;
-
-                            default:
-                                if (drow[col] == System.DBNull.Value)
-                                    sbNewValue.Append("NULL");
-                                else
-                                    sbNewValue.Append(Convert.ToString(drow[col]));
-                                break;
-                        }
-                    }
-                    catch
-                    {
-                        sbNewValue.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
-                    }
-
-                    sbValues.Append(sbNewValue.ToString());
+                StringBuilder newValues = new StringBuilder("[" + col + "] = ");
+                if (whereValues.ToString() != "")
+                {
+                    whereValues.Append(" AND ");
                 }
 
-                // DELETE FROM table WHERE col1 = 3 AND col2 = '4'
-                // write the line out to the stringbuilder
-                string snewsql = string.Format("DELETE FROM [{0}] WHERE {1};", sTargetTableName, sbValues.ToString());
-                sbSqlStatements.Append(snewsql);
-                sbSqlStatements.AppendLine();
-                sbSqlStatements.AppendLine();
+                try
+                {
+                    newValues.Append(TypeHelper.GetType(drow[col]));
+                }
+                catch
+                {
+                    newValues.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                }
+
+                whereValues.Append(newValues.ToString());
             }
 
-            sSqlDeletes = sbSqlStatements.ToString();
-            return sSqlDeletes;
+            return string.Format("UPDATE [{0}] SET {1} WHERE {2};", tableName, values.ToString(), whereValues.ToString());
         }
+
+        public static string GenerateSqlDelete(string[] columns, DataTable table, string tableName, int rowIndex)
+        {
+            DataRow drow = table.Rows[rowIndex];
+            StringBuilder values = new StringBuilder("");
+            foreach (string col in columns)
+            {
+                StringBuilder newValues = new StringBuilder("[" + col + "] = ");
+
+                if (values.ToString() != "")
+                {
+                    values.Append(" AND ");
+                }
+
+                try
+                {
+                    newValues.Append(TypeHelper.GetType(drow[col]));
+                }
+                catch
+                {
+                    newValues.Append(string.Format("'{0}'", QuoteSQLString(drow[col])));
+                }
+
+                values.Append(newValues.ToString());
+            }
+            return string.Format("DELETE FROM [{0}] WHERE {1};", tableName, values.ToString());
+        }
+
 
         public static string QuoteSQLString(string str)
         {
             return str.Replace("'", "''");
         }
 
-        public static string QuoteSQLString(object ostr)
+        public static string QuoteSQLString(object obj)
         {
-            return ostr.ToString().Replace("'", "''");
+            return obj.ToString().Replace("'", "''");
         }
     }
 }

@@ -10,137 +10,107 @@ namespace DBMS
     public class DBHelper
     {
 
-        public static SqlConnection GetConnection(string sConnection, string sDatabase)
+        public static SqlConnection GetConnection(string connection, string database)
         {
-            SqlConnection dbconnection = null;
+            SqlConnection conn = null;
+            conn = new SqlConnection(connection);
+            conn.Open();
 
-            try
+            if (database.Trim() != string.Empty)
             {
-                dbconnection = new SqlConnection(sConnection);
-                dbconnection.Open();
-
-                if (sDatabase.Trim() != string.Empty)
-                {
-                    dbconnection.ChangeDatabase(sDatabase);
-                }
+                conn.ChangeDatabase(database);
             }
-            catch (System.InvalidOperationException e)
-            {
-                throw new Exception("GetConnection error: " + e.Message);
-            }
-            catch (System.Data.SqlClient.SqlException e)
-            {
-                throw new Exception("GetConnection error2: " + e.Message);
-            }
-
-            return dbconnection;
+            return conn;
         }
 
-        public static DataTable GetDatabases(string sConnection)
+        public static DataTable GetDatabases(string connection)
         {
-            SqlConnection connection = null;
+            SqlConnection conn = null;
             DataTable dt = null;
 
-            try
-            {
-                connection = GetConnection(sConnection, string.Empty);
-                if (connection == null)
-                    return dt;
+            conn = GetConnection(connection, string.Empty);
 
-                string sDbCommand = "SELECT name AS DATABASE_NAME, 0 AS DATABASE_SIZE, NULL AS REMARKS FROM master.dbo.sysdatabases WHERE HAS_DBACCESS(name) = 1  ORDER BY name";
-                DataSet dset = SqlHelper.ExecuteDataset(connection, CommandType.Text, sDbCommand);
+            if (connection == null)
+            {
+                return dt;
+            }
 
-                if ((dset != null) && (dset.Tables.Count > 0))
-                    dt = dset.Tables[0];
-            }
-            catch (Exception ex)
+            string cmd = "SELECT name AS DATABASE_NAME, 0 AS DATABASE_SIZE, NULL AS REMARKS FROM master.dbo.sysdatabases WHERE HAS_DBACCESS(name) = 1  ORDER BY name";
+            DataSet ds = SqlHelper.ExecuteDataset(conn, CommandType.Text, cmd);
+
+            if ((ds != null) && (ds.Tables.Count > 0))
             {
-                throw new Exception("GetDatabases error: " + ex.Message);
+                dt = ds.Tables[0];
             }
-            finally
+
+            if (conn != null)
             {
-                if (connection != null)
-                {
-                    connection.Close();
-                    connection.Dispose();
-                }
+                conn.Close();
+                conn.Dispose();
             }
 
             return dt;
         }
 
-        public static DataTable GetDatabaseTables(string sConnection, string sDatabase)
+        public static DataTable GetDatabaseTables(string connection, string database)
         {
-            SqlConnection connection = null;
+            SqlConnection conn = null;
             DataTable dt = null;
 
-            try
+            conn = GetConnection(connection, database);
+            if (connection == null)
             {
-                connection = GetConnection(sConnection, sDatabase);
-                if (connection == null)
-                    return dt;
-
-                SqlCommand cmd = new SqlCommand("sp_tables", connection);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@table_type", "'TABLE'");
-
-                DataSet dset = new DataSet();
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                da.Fill(dset);
-
-                if ((dset != null) && (dset.Tables.Count > 0))
-                    dt = dset.Tables[0];
+                return dt;
             }
-            catch (Exception ex)
+
+            SqlCommand cmd = new SqlCommand("sp_tables", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@table_type", "'TABLE'");
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(ds);
+
+            if ((ds != null) && (ds.Tables.Count > 0))
             {
-                throw new Exception("GetDatabaseTables error: " + ex.Message);
+                dt = ds.Tables[0];
             }
-            finally
+            if (conn != null)
             {
-                if (connection != null)
-                {
-                    connection.Close();
-                    connection.Dispose();
-                }
+                conn.Close();
+                conn.Dispose();
             }
 
             return dt;
         }
 
-        public static DataTable GetDatabaseTableColumns(string sConnection, string sDatabase, string sTableName)
+        public static DataTable GetDatabaseTableColumns(string connection, string database, string sTableName)
         {
-            SqlConnection connection = null;
+            SqlConnection conn = null;
             DataTable dt = null;
 
-            try
-            {
-                connection = GetConnection(sConnection, sDatabase);
-                if (connection == null)
-                    return dt;
+            conn = GetConnection(connection, database);
+            if (connection == null)
+                return dt;
 
-                SqlParameter[] sqlParms = new SqlParameter[] { new SqlParameter("@table_name", sTableName) };
-                DataSet dset = SqlHelper.ExecuteDataset(connection, "sp_columns", sqlParms);
+            SqlParameter[] sqlParms = new SqlParameter[] { new SqlParameter("@table_name", sTableName) };
+            DataSet dset = SqlHelper.ExecuteDataset(conn, "sp_columns", sqlParms);
 
-                if ((dset != null) && (dset.Tables.Count > 0))
-                    dt = dset.Tables[0];
-            }
-            catch (Exception ex)
+            if ((dset != null) && (dset.Tables.Count > 0))
             {
-                throw new Exception("GetDatabaseTableColumns error: " + ex.Message);
+                dt = dset.Tables[0];
             }
-            finally
+
+            if (conn != null)
             {
-                if (connection != null)
-                {
-                    connection.Close();
-                    connection.Dispose();
-                }
+                conn.Close();
+                conn.Dispose();
             }
 
             return dt;
         }
 
-        public static DataTable GetPrimaryKey(string sConnection, string databaseName, string tableName)
+        public static DataTable GetPrimaryKey(string connection, string databaseName, string tableName)
         {
             string query =
                 "SELECT [name]  FROM syscolumns WHERE [id] IN (SELECT [id] FROM sysobjects WHERE [name] = '"
@@ -148,37 +118,31 @@ namespace DBMS
                 + "')AND colid IN (SELECT SIK.colid FROM sysindexkeys SIK JOIN sysobjects SO ON SIK.[id] = SO.[id] WHERE SIK.indid = 1 AND SO.[name] = '"
                 + tableName
                 +"')";
-            return LoadDataTable(sConnection, databaseName, query);
+            return LoadDataTable(connection, databaseName, query);
         }
 
-        public static DataTable LoadDataTable(string sConnection, string sDatabase, string sQuery)
+        public static DataTable LoadDataTable(string connection, string database, string sQuery)
         {
-            SqlConnection connection = null;
+            SqlConnection conn = null;
             DataTable dt = null;
 
-            try
+            conn = GetConnection(connection, database);
+            if (connection == null)
             {
-                connection = GetConnection(sConnection, sDatabase);
-                if (connection == null)
-                    return dt;
-
-                DataSet dset = SqlHelper.ExecuteDataset(connection, CommandType.Text, sQuery);
-                if ((dset != null) && (dset.Tables.Count > 0))
-                    dt = dset.Tables[0];
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("GetDatabases error: " + ex.Message);
-            }
-            finally
-            {
-                if (connection != null)
-                {
-                    connection.Close();
-                    connection.Dispose();
-                }
+                return dt;
             }
 
+            DataSet ds = SqlHelper.ExecuteDataset(conn, CommandType.Text, sQuery);
+            if ((ds != null) && (ds.Tables.Count > 0))
+            {
+                dt = ds.Tables[0];
+            }
+            if (connection != null)
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            
             return dt;
         }
     }
