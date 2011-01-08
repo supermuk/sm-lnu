@@ -34,32 +34,6 @@ namespace DBMS
             dockContainer.DockForm(AddDockableForm(sqlSplitContainer, "Sql statement", (Icon)Resources.icon7), DockStyle.Top, zDockMode.Inner);
         }
 
-        private void Initialize()
-        {
-            try
-            {
-                Cursor.Current = Cursors.WaitCursor;
-
-                databasesComboBox.DataSource = null;
-                databasesComboBox.Items.Clear();
-     
-
-                databasesComboBox.DisplayMember = "DATABASE_NAME";
-                databasesComboBox.ValueMember = "DATABASE_NAME";
-                var dt = DBHelper.GetDatabases(mConnectionString);
-                databasesComboBox.DataSource = dt;
-            }
-            catch (Exception ex)
-            {
-                PrintOutput(ex.Message, PrintType.Error);
-            }
-            finally
-            {
-                Cursor.Current = Cursors.Default;
-                //UpdateControls();
-            }
-        }
-
         private DockableFormInfo AddDockableForm(Control control, string name, Icon icon)
         {
             control.Dock = DockStyle.Fill;
@@ -68,17 +42,6 @@ namespace DBMS
             form.Icon = icon;
             form.Controls.Add(control);
             return dockContainer.Add(form, Crom.Controls.Docking.zAllowedDock.All, Guid.NewGuid());
-        }
-
-        private void LoadTableNames(string dbName)
-        {                
-            tablesListBox.DataSource = null;
-            tablesListBox.Items.Clear();
-
-            var dt = DBHelper.GetDatabaseTables(mConnectionString, dbName);
-            tablesListBox.DisplayMember = "TABLE_NAME";
-            tablesListBox.ValueMember = "TABLE_NAME";
-            tablesListBox.DataSource = dt;
         }
 
         private void PrintOutput(string message, PrintType type)
@@ -110,6 +73,57 @@ namespace DBMS
             outputRichTextBox.SelectedRtf = rtb.SelectedRtf;
         }
 
+        #region Load Data
+
+        private void LoadDatabaseNames()
+        {
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+
+                databasesComboBox.DataSource = null;
+                databasesComboBox.Items.Clear();
+     
+
+                databasesComboBox.DisplayMember = "DATABASE_NAME";
+                databasesComboBox.ValueMember = "DATABASE_NAME";
+                var dt = DBHelper.GetDatabases(mConnectionString);
+                databasesComboBox.DataSource = dt;
+               
+            }
+            catch (Exception ex)
+            {
+                PrintOutput(ex.Message, PrintType.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+                //UpdateControls();
+            }
+        }
+
+        private void LoadTableNames(string dbName)
+        {                
+            tablesListBox.DataSource = null;
+            tablesListBox.Items.Clear();
+
+            var dt = DBHelper.GetDatabaseTables(mConnectionString, dbName);
+            tablesListBox.DisplayMember = "TABLE_NAME";
+            tablesListBox.ValueMember = "TABLE_NAME";
+            tablesListBox.DataSource = dt;
+        }
+
+        private string[] GetPrimaryKeyColumns()
+        {
+            var dt = DBHelper.GetPrimaryKey(mConnectionString, mDatabaseName, mTableName);
+            List<string> keyColumns = new List<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                keyColumns.Add(row["name"].ToString());
+            }
+            return keyColumns.ToArray();
+        }
+
         private void Execute(string query)
         {
             if (query.Trim() == string.Empty)
@@ -125,12 +139,11 @@ namespace DBMS
 
                 mDataTable = DBHelper.LoadDataTable(mConnectionString, mDatabaseName, query);
                 dataGridView.DataSource = mDataTable;
-                //dataDataGrid.DataSource = mDataTable;
-                //chklstIncludeFields.Items.Clear();
-                //foreach (DataColumn col in m_TableInfo.Columns)
+
+                string[] keys = GetPrimaryKeyColumns();
+                foreach (string key in keys)
                 {
-                    // exclude the primary/auto-increment key by default, but select/check all the others
-                    //chklstIncludeFields.Items.Add(col.ColumnName, (chklstIncludeFields.Items.Count > 0));
+                    dataGridView.Columns[key].ReadOnly = true;
                 }
             }
             catch (Exception ex)
@@ -140,21 +153,19 @@ namespace DBMS
             finally
             {
                 Cursor.Current = Cursors.Default;
-                UpdateAll();
             }
         }
 
-        private void UpdateAll()
-        {
-        }
+        #endregion
+
+        #region Generate Sql
 
         private void GenerateSqlStatements()
         {
-            // clear the string member
             string sql = string.Empty;
 
             // create an array of all the columns that are to be included
-            ArrayList columns = new ArrayList();
+            List<string> columns = new List<string>();
             foreach (DataColumn col in mDataTable.Columns)
             {
                 columns.Add(col.ColumnName);
@@ -172,49 +183,31 @@ namespace DBMS
             }
 
             var dt = DBHelper.GetPrimaryKey(mConnectionString, mDatabaseName, mTableName);
-            ArrayList keyColumns = new ArrayList();
+            List<string> keyColumns = new List<string>();
             foreach (DataRow row in dt.Rows)
             {
                 keyColumns.Add(row["name"].ToString());
             }
 
-            sql = SqlGenHelper.GenerateSqlUpdates(columns, keyColumns, mDataTable, mTableName);
+            sql = SqlGenHelper.GenerateSql(columns.ToArray(), keyColumns.ToArray(), mDataTable, mTableName, QueryType.Update);
             sqlRichTextBox.Text = sql;
         }
 
         private void GenerateUpdate(int rowIndex, int colIndex)
         {
-            // clear the string member
-            string sql = string.Empty;
-
-            // create an array of all the columns that are to be included
-            ArrayList columns = new ArrayList();
-            foreach (DataColumn col in mDataTable.Columns)
-            {
-                columns.Add(col.ColumnName);
-            }
-            if (columns.Count <= 0)
-            {
-                MessageBox.Show("No columns selected!  Please check/select some columns to include!");
-                return;
-            }
-
-            if (mTableName == string.Empty)
-            {
-                MessageBox.Show("No valid target table name!  Please enter a table name to be used in the SQL statements!");
-                return;
-            }
-
-            var dt = DBHelper.GetPrimaryKey(mConnectionString, mDatabaseName, mTableName);
-            ArrayList keyColumns = new ArrayList();
-            foreach (DataRow row in dt.Rows)
-            {
-                keyColumns.Add(row["name"].ToString());
-            }
-
-            sql = SqlGenHelper.GenerateSqlUpdates(columns, keyColumns, mDataTable, mTableName, rowIndex);
-            sqlRichTextBox.Text = sql;
+            string query = "";
+            query = SqlGenHelper.GenerateSqlUpdate(new string[] { mDataTable.Columns[colIndex].ColumnName }, GetPrimaryKeyColumns(), mDataTable, mTableName, rowIndex);
+            sqlRichTextBox.Text = query;
         }
+
+        private void GenerateDelete(int rowIndex)
+        {
+            string query = "";
+            query = SqlGenHelper.GenerateSqlDelete(GetPrimaryKeyColumns(), mDataTable, mTableName, rowIndex);
+            sqlRichTextBox.Text = query;
+        }
+
+        #endregion
 
         #region Events
 
@@ -236,7 +229,7 @@ namespace DBMS
             if (tablesListBox.SelectedValue != null)
             {
                 mTableName = tablesListBox.SelectedValue.ToString();
-                Execute("SELECT * FROM " + mTableName);
+                Execute("SELECT * FROM [" + mTableName + "]");
             }
 
             //dgTableInfo.DataSource = null;
@@ -245,13 +238,14 @@ namespace DBMS
 
         private void connectButton_Click(object sender, EventArgs e)
         {
-            Initialize();
+            LoadDatabaseNames();
         }
 
         private void executeButton_Click(object sender, EventArgs e)
         {
             Execute(sqlRichTextBox.Text);
         }
+        
         private void button1_Click(object sender, EventArgs e)
         {
             GenerateSqlStatements();
@@ -260,6 +254,11 @@ namespace DBMS
         private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             GenerateUpdate(e.RowIndex, e.ColumnIndex);
+        }
+    
+        private void dataGridView_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            GenerateDelete(e.RowIndex);
         }
         
         #endregion
