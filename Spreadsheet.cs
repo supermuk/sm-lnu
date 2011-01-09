@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ZedGraph;
 
 namespace Spreadsheetq
 {
@@ -204,7 +205,9 @@ namespace Spreadsheetq
                 table.Rows[p.Key].Cells[p.Value].Style.BackColor = Color.AliceBlue;
             }
         }
-        
+
+        #region UndoRedo
+
         public void Undo()
         {
             table.EndEdit();
@@ -244,84 +247,7 @@ namespace Spreadsheetq
             CurrentRevision++;
         }
 
-        private void table_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            string value = "";
-            if(table.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null)
-            {
-                value = table.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-            }
-            string colName = table.Columns[e.ColumnIndex].Name;
-            SaveCellChanges(RowIndex, colName, value);
-            Save();
-            Changed.Invoke(this, new EventArgs());
-        }
-
-        private void table_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                foreach (DataGridViewCell cell in table.SelectedCells)
-                {
-                    SaveCellChanges(cell.RowIndex, table.Columns[cell.ColumnIndex].Name, "");
-                }
-                Changed.Invoke(this, new EventArgs());
-                Save();
-            }
-            else if (e.Control && e.KeyCode == Keys.V)
-            {
-                if (Clipboard.ContainsText(TextDataFormat.Text))
-                {
-                    string data = Clipboard.GetText();
-                    string[] lines = data.Split('\n');
-                    int rowIndex = table.CurrentCell.RowIndex;
-                    int colIndex = table.CurrentCell.ColumnIndex;
-                    int rowShift = 0;
-                    int colShift = 0;
-                    if (data == CopiedBuffer)
-                    {
-                        rowShift = CopiedRowIndex - rowIndex;
-                        colShift = CopiedColumnIndex - colIndex;
-                    }
-                    foreach (string line in lines)
-                    {
-                        string[] cells = line.Split('\t');
-                        for (int j = 0; j < cells.Length; j++)
-                        {
-                            if (rowIndex < table.Rows.Count && colIndex + j < table.Columns.Count)
-                            {
-                                string value = cells[j];
-                                string key = table.Columns[CopiedColumnIndex + j].Name + (rowIndex + rowShift).ToString();
-                                if (FormulasSaves[CopiedRevision].ContainsKey(key))
-                                {
-                                    value = ReplaceCellNames(rowShift, colShift, FormulasSaves[CopiedRevision][key]);
-                                }
-                                
-                                SaveCellChanges(rowIndex, table.Columns[colIndex + j].Name, value);
-                            }
-                        }
-                        rowIndex++;
-                    }
-                    Changed.Invoke(this, new EventArgs());
-                    Save();
-                }
-            }
-            else if(e.Control && e.KeyCode == Keys.C)
-            {
-                CopyToBuffer();
-                CopiedRevision = CurrentRevision;
-            }
-            else if (e.Control && e.KeyCode == Keys.X)
-            {
-                CopyToBuffer();
-                foreach (DataGridViewCell cell in table.SelectedCells)
-                {
-                    SaveCellChanges(cell.RowIndex, table.Columns[cell.ColumnIndex].Name, "");
-                }
-                Changed.Invoke(this, new EventArgs());
-                Save();
-            }
-        }
+        #endregion
 
         private string ReplaceCellNames(int rowShift, int colShift, string value)
         {
@@ -400,28 +326,6 @@ namespace Spreadsheetq
                 }
             }
         }
-        
-        private void table_SelectionChanged(object sender, EventArgs e)
-        {
-            RowIndex = table.CurrentCell.RowIndex;
-            ColumnIndex = table.CurrentCell.ColumnIndex;
-            ColumnName = table.Columns[ColumnIndex].Name;
-            CellName = ColumnName + RowIndex.ToString();
-            toolStripStatusLabel1.Text = "Cell: " + CellName;
-            if (Formulas.ContainsKey(LastCellName))
-            {
-                CalculateCells(table.Rows[LastRowIndex].Cells[LastColumnIndex]);
-            }
-            if (Formulas.ContainsKey(CellName))
-            {
-                table.CurrentCell.Value = Formulas[CellName];
-            }
-
-            LastColumnName = ColumnName;
-            LastColumnIndex = ColumnIndex;
-            LastRowIndex = RowIndex;
-            LastCellName = ColumnName + RowIndex.ToString();
-        }
 
         public string SaveFile()
         {
@@ -494,7 +398,123 @@ namespace Spreadsheetq
             Save();
         }
 
+        public double[] GetSelectedArray()
+        {
+            List<double> arr = new List<double>();
+            foreach (DataGridViewCell cell in table.SelectedCells)
+            {
+                string cellName = table.Columns[cell.ColumnIndex].Name + cell.RowIndex.ToString();
+                arr.Add(double.Parse(Data[cellName]));
+            }
+
+            return arr.ToArray();
+        }
+
+        #region Events
+
         public event EventHandler Changed;
 
+        private void table_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string value = "";
+            if (table.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null)
+            {
+                value = table.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+            }
+            string colName = table.Columns[e.ColumnIndex].Name;
+            SaveCellChanges(RowIndex, colName, value);
+            Save();
+            Changed.Invoke(this, new EventArgs());
+        }
+
+        private void table_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                foreach (DataGridViewCell cell in table.SelectedCells)
+                {
+                    SaveCellChanges(cell.RowIndex, table.Columns[cell.ColumnIndex].Name, "");
+                }
+                Changed.Invoke(this, new EventArgs());
+                Save();
+            }
+            else if (e.Control && e.KeyCode == Keys.V)
+            {
+                if (Clipboard.ContainsText(TextDataFormat.Text))
+                {
+                    string data = Clipboard.GetText();
+                    string[] lines = data.Split('\n');
+                    int rowIndex = table.CurrentCell.RowIndex;
+                    int colIndex = table.CurrentCell.ColumnIndex;
+                    int rowShift = 0;
+                    int colShift = 0;
+                    if (data == CopiedBuffer)
+                    {
+                        rowShift = CopiedRowIndex - rowIndex;
+                        colShift = CopiedColumnIndex - colIndex;
+                    }
+                    foreach (string line in lines)
+                    {
+                        string[] cells = line.Split('\t');
+                        for (int j = 0; j < cells.Length; j++)
+                        {
+                            if (rowIndex < table.Rows.Count && colIndex + j < table.Columns.Count)
+                            {
+                                string value = cells[j];
+                                string key = table.Columns[CopiedColumnIndex + j].Name + (rowIndex + rowShift).ToString();
+                                if (FormulasSaves[CopiedRevision].ContainsKey(key))
+                                {
+                                    value = ReplaceCellNames(rowShift, colShift, FormulasSaves[CopiedRevision][key]);
+                                }
+
+                                SaveCellChanges(rowIndex, table.Columns[colIndex + j].Name, value);
+                            }
+                        }
+                        rowIndex++;
+                    }
+                    Changed.Invoke(this, new EventArgs());
+                    Save();
+                }
+            }
+            else if (e.Control && e.KeyCode == Keys.C)
+            {
+                CopyToBuffer();
+                CopiedRevision = CurrentRevision;
+            }
+            else if (e.Control && e.KeyCode == Keys.X)
+            {
+                CopyToBuffer();
+                foreach (DataGridViewCell cell in table.SelectedCells)
+                {
+                    SaveCellChanges(cell.RowIndex, table.Columns[cell.ColumnIndex].Name, "");
+                }
+                Changed.Invoke(this, new EventArgs());
+                Save();
+            }
+        }
+
+        private void table_SelectionChanged(object sender, EventArgs e)
+        {
+            RowIndex = table.CurrentCell.RowIndex;
+            ColumnIndex = table.CurrentCell.ColumnIndex;
+            ColumnName = table.Columns[ColumnIndex].Name;
+            CellName = ColumnName + RowIndex.ToString();
+            toolStripStatusLabel1.Text = "Cell: " + CellName;
+            if (Formulas.ContainsKey(LastCellName))
+            {
+                CalculateCells(table.Rows[LastRowIndex].Cells[LastColumnIndex]);
+            }
+            if (Formulas.ContainsKey(CellName))
+            {
+                table.CurrentCell.Value = Formulas[CellName];
+            }
+
+            LastColumnName = ColumnName;
+            LastColumnIndex = ColumnIndex;
+            LastRowIndex = RowIndex;
+            LastCellName = ColumnName + RowIndex.ToString();
+        }
+
+        #endregion
     }
 }

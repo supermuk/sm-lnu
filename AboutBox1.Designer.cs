@@ -66,9 +66,9 @@
             // richTextBox1
             // 
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(99, 119);
+            this.richTextBox1.Location = new System.Drawing.Point(100, 119);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(356, 203);
+            this.richTextBox1.Size = new System.Drawing.Size(355, 203);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = resources.GetString("richTextBox1.Text");
             // 
@@ -79,7 +79,7 @@
             this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
             this.logoPictureBox.Name = "logoPictureBox";
             this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 6);
-            this.logoPictureBox.Size = new System.Drawing.Size(90, 357);
+            this.logoPictureBox.Size = new System.Drawing.Size(91, 357);
             this.logoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.logoPictureBox.TabIndex = 12;
             this.logoPictureBox.TabStop = false;
@@ -87,11 +87,11 @@
             // labelProductName
             // 
             this.labelProductName.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelProductName.Location = new System.Drawing.Point(102, 0);
+            this.labelProductName.Location = new System.Drawing.Point(103, 0);
             this.labelProductName.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.labelProductName.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelProductName.Name = "labelProductName";
-            this.labelProductName.Size = new System.Drawing.Size(353, 17);
+            this.labelProductName.Size = new System.Drawing.Size(352, 17);
             this.labelProductName.TabIndex = 19;
             this.labelProductName.Text = "Spreadsheet";
             this.labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -99,11 +99,11 @@
             // labelVersion
             // 
             this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelVersion.Location = new System.Drawing.Point(102, 36);
+            this.labelVersion.Location = new System.Drawing.Point(103, 36);
             this.labelVersion.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.labelVersion.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(353, 17);
+            this.labelVersion.Size = new System.Drawing.Size(352, 17);
             this.labelVersion.TabIndex = 0;
             this.labelVersion.Text = "Copyright (c) Orest Mykhaylovych";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -111,11 +111,11 @@
             // labelCopyright
             // 
             this.labelCopyright.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelCopyright.Location = new System.Drawing.Point(102, 72);
+            this.labelCopyright.Location = new System.Drawing.Point(103, 72);
             this.labelCopyright.Margin = new System.Windows.Forms.Padding(6, 0, 3, 0);
             this.labelCopyright.MaximumSize = new System.Drawing.Size(0, 17);
             this.labelCopyright.Name = "labelCopyright";
-            this.labelCopyright.Size = new System.Drawing.Size(353, 17);
+            this.labelCopyright.Size = new System.Drawing.Size(352, 17);
             this.labelCopyright.TabIndex = 21;
             this.labelCopyright.Text = "sm.lpml@gmail.com";
             this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
