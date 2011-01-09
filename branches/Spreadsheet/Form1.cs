@@ -16,11 +16,16 @@ namespace Spreadsheetq
         private bool selectY = false;
         private double[] x;
         private double[] y;
-
+        private string GrapName;
+        private string NameX;
+        private string NameY;
+        private bool applyFormula = false;
+        private string cellName = "";
         public Form1()
         {
             InitializeComponent();
             spreadsheet1.Changed += new EventHandler(newSheet_Changed);
+            toolStripComboBox1.ComboBox.DataSource = Enum.GetValues(typeof(CalcTypes));
         }
 
         private void toolStripButton5_Click(object sender, EventArgs e)
@@ -189,7 +194,7 @@ namespace Spreadsheetq
             if (selectX && selectY)
             {
                 y = s.GetSelectedArray();
-                Diagram d = new Diagram(x, y);
+                Diagram d = new Diagram(x, y, GrapName, NameX, NameY);
                 d.Show();
                 selectX = false;
                 selectY = false;
@@ -198,6 +203,14 @@ namespace Spreadsheetq
             {
                 if (!selectX)
                 {
+                    DiagramName dn = new DiagramName();
+                    if (dn.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+                    GrapName = dn.Name;
+                    NameX = dn.NameX;
+                    NameY = dn.NameY;
                     selectX = true;
                     MessageBox.Show("Виберіть значення х");
                 }
@@ -207,6 +220,72 @@ namespace Spreadsheetq
                     selectY = true;
                     MessageBox.Show("Виберіть значення у");
                 }
+            }
+        }
+
+        private void toolStripComboBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton9_Click(object sender, EventArgs e)
+        {
+            Spreadsheet s = ((Spreadsheet)tabControl1.SelectedTab.Controls[0]);
+            if (!applyFormula)
+            {
+                string[] cells = s.GetSelectedCells();
+                if (cells.Length != 1)
+                {
+                    MessageBox.Show("Формула може бути застосована лише до 1 виділеної комірки");
+                    return;
+                }
+                cellName = cells[0];
+                applyFormula = true;
+                MessageBox.Show("Виберіть комірки");
+            }
+            else
+            {
+                string[] cells = s.GetSelectedCells();
+                string value = "=";
+                switch ((CalcTypes)toolStripComboBox1.ComboBox.SelectedValue)
+                {
+                    case CalcTypes.Sum:
+                        for (int i = 0; i < cells.Length; i++)
+                        {
+                            if (i != 0)
+                            {
+                                value += "+";
+                            }
+                            value += cells[i];
+                        }
+                        break;
+                    case CalcTypes.Avg:
+                        value += "(";
+                        for (int i = 0; i < cells.Length; i++)
+                        {
+                            if (i != 0)
+                            {
+                                value += "+";
+                            }
+                            value += cells[i];
+                        }
+                        value += ")/" + cells.Length.ToString();
+                        break;
+                    case CalcTypes.GeomAvg:
+                        value += "(";
+                        for (int i = 0; i < cells.Length; i++)
+                        {
+                            if (i != 0)
+                            {
+                                value += "*";
+                            }
+                            value += cells[i];
+                        }
+                        value += ")^(1/" + cells.Length.ToString() + ")";
+                        break;
+                }
+                s.SetFormula(cellName, value);
+                applyFormula = false;
             }
         }
     }
