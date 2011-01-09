@@ -410,6 +410,27 @@ namespace Spreadsheetq
             return arr.ToArray();
         }
 
+        public string[] GetSelectedCells()
+        {
+            List<string> arr = new List<string>();
+            foreach (DataGridViewCell cell in table.SelectedCells)
+            {
+                string cellName = table.Columns[cell.ColumnIndex].Name + cell.RowIndex.ToString();
+                arr.Add(cellName);
+            }
+
+            return arr.ToArray();
+        }
+
+        public void SetFormula(string cellName, string formula)
+        {
+            string value = formula;
+            KeyValuePair<int, string> cell = ParseCellName(cellName);
+            SaveCellChanges(cell.Key, cell.Value, value);
+            Save();
+            Changed.Invoke(this, new EventArgs());
+        }
+
         #region Events
 
         public event EventHandler Changed;

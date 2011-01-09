@@ -61,6 +61,13 @@
     <Compile Include="Diagram.Designer.cs">
       <DependentUpon>Diagram.cs</DependentUpon>
     </Compile>
+    <Compile Include="DiagramName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DiagramName.Designer.cs">
+      <DependentUpon>DiagramName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Enums.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +82,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Diagram.resx">
       <DependentUpon>Diagram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DiagramName.resx">
+      <DependentUpon>DiagramName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -118,6 +128,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\graph.ico" />
     <Content Include="Libs\ZedGraph.dll" />
     <Content Include="Libs\ZedGraph.XML" />
   </ItemGroup>
