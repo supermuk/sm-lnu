@@ -102,8 +102,8 @@ namespace DBMS
 
             string query = SqlGenHelper.GenerateCreateTable(columns.ToArray(), tableName, primaryKey);
 
-            sqlRichTextBox.Text = query;
-            //Execute(query);
+            Execute(query);
+            LoadTableNames(mDatabaseName);
         }
 
         #region Load Data
@@ -169,8 +169,9 @@ namespace DBMS
                 PrintOutput(query, PrintType.Execute);
                 Cursor.Current = Cursors.WaitCursor;
 
-                //dataGridView.DataSource = null;
-                //dataGridView.Rows.Clear();
+                dataGridView.DataSource = null;
+                dataGridView.Columns.Clear();
+                dataGridView.Rows.Clear();
 
                 mDataTable = DBHelper.LoadDataTable(mConnectionString, mDatabaseName, query);
                 if (mDataTable.Rows.Count > 0)
@@ -178,14 +179,16 @@ namespace DBMS
                     dataGridView.DataSource = mDataTable;
 
                     string[] keys = GetPrimaryKeyColumns();
-                    foreach (string key in keys)
-                    {
-                        dataGridView.Columns[key].ReadOnly = true;
-                    }
                 }
                 else
                 {
                     dataGridView.DataSource = null;
+                    dataGridView.Columns.Clear();
+                    dataGridView.Rows.Clear();
+                    foreach (DataColumn col in mDataTable.Columns)
+                    {
+                        dataGridView.Columns.Add(col.ColumnName, col.ColumnName);
+                    }
                     //mDataTable.Rows.Clear();
                 }
             }
@@ -234,32 +237,19 @@ namespace DBMS
         {
             string sql = string.Empty;
 
-            // create an array of all the columns that are to be included
             List<string> columns = new List<string>();
             foreach (DataColumn col in mDataTable.Columns)
             {
                 columns.Add(col.ColumnName);
             }
-            if (columns.Count <= 0)
-            {
-                MessageBox.Show("No columns selected!  Please check/select some columns to include!");
-                return;
-            }
 
             if (mTableName == string.Empty)
             {
-                MessageBox.Show("No valid target table name!  Please enter a table name to be used in the SQL statements!");
+                MessageBox.Show("No valid target table name!  Please select a table name to be used in the SQL statements!");
                 return;
             }
 
-            var dt = DBHelper.GetPrimaryKey(mConnectionString, mDatabaseName, mTableName);
-            List<string> keyColumns = new List<string>();
-            foreach (DataRow row in dt.Rows)
-            {
-                keyColumns.Add(row["name"].ToString());
-            }
-
-            sql = SqlGenHelper.GenerateSql(columns.ToArray(), keyColumns.ToArray(), mDataTable, mTableName, QueryType.Update);
+            sql = SqlGenHelper.GenerateSql(columns.ToArray(), null, mDataTable, mTableName, QueryType.Insert);
             sqlRichTextBox.Text = sql;
         }
 
