@@ -47,11 +47,12 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton8 = new System.Windows.Forms.ToolStripButton();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.NewSheet = new System.Windows.Forms.TabPage();
-            this.spreadsheet1 = new Spreadsheetq.Spreadsheet();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.spreadsheet1 = new Spreadsheetq.Spreadsheet();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -66,7 +67,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(606, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(750, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -159,10 +160,11 @@
             this.toolStripButton7,
             this.toolStripButton2,
             this.toolStripButton3,
-            this.toolStripButton5});
+            this.toolStripButton5,
+            this.toolStripButton8});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(606, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(750, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -240,6 +242,16 @@
             this.toolStripButton5.Text = "Exit";
             this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
+            // toolStripButton8
+            // 
+            this.toolStripButton8.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton8.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton8.Image")));
+            this.toolStripButton8.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton8.Name = "toolStripButton8";
+            this.toolStripButton8.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton8.Text = "toolStripButton8";
+            this.toolStripButton8.Click += new System.EventHandler(this.toolStripButton8_Click);
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.NewSheet);
@@ -247,7 +259,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 49);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(606, 353);
+            this.tabControl1.Size = new System.Drawing.Size(750, 252);
             this.tabControl1.TabIndex = 1;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
             // 
@@ -256,10 +268,14 @@
             this.NewSheet.Controls.Add(this.spreadsheet1);
             this.NewSheet.Location = new System.Drawing.Point(4, 22);
             this.NewSheet.Name = "NewSheet";
-            this.NewSheet.Size = new System.Drawing.Size(598, 327);
+            this.NewSheet.Size = new System.Drawing.Size(742, 226);
             this.NewSheet.TabIndex = 1;
             this.NewSheet.Text = "Untitled sheet";
             this.NewSheet.UseVisualStyleBackColor = true;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // spreadsheet1
             // 
@@ -267,18 +283,14 @@
             this.spreadsheet1.Location = new System.Drawing.Point(0, 0);
             this.spreadsheet1.Margin = new System.Windows.Forms.Padding(0);
             this.spreadsheet1.Name = "spreadsheet1";
-            this.spreadsheet1.Size = new System.Drawing.Size(598, 327);
+            this.spreadsheet1.Size = new System.Drawing.Size(742, 226);
             this.spreadsheet1.TabIndex = 0;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(606, 402);
+            this.ClientSize = new System.Drawing.Size(750, 301);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -321,6 +333,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripButton toolStripButton7;
+        private System.Windows.Forms.ToolStripButton toolStripButton8;
     }
 }
 

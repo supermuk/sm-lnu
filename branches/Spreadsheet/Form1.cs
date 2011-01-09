@@ -7,12 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-
+using ZedGraph;
 namespace Spreadsheetq
 {
     public partial class Form1 : Form
     {
-
+        private bool selectX = false;
+        private bool selectY = false;
+        private double[] x;
+        private double[] y;
 
         public Form1()
         {
@@ -24,6 +27,7 @@ namespace Spreadsheetq
         {
             Application.Exit();
         }
+
         private void AddTab()
         {
             int pos = tabControl1.TabPages.Count;
@@ -35,6 +39,7 @@ namespace Spreadsheetq
             tabControl1.TabPages.Add(page);
             tabControl1.SelectTab(pos);
         }
+
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
             if (e.TabPage.Name == "NewSheet")
@@ -102,6 +107,7 @@ namespace Spreadsheetq
             Spreadsheet s = ((Spreadsheet)tabControl1.SelectedTab.Controls[0]);
             SaveToFile(s.SaveFile());
         }
+
         private void SaveToFile(string text)
         {
             saveFileDialog1.DefaultExt = "csv";
@@ -174,6 +180,33 @@ namespace Spreadsheetq
                 StreamReader sr = new StreamReader(openFileDialog1.FileName);
                 s.OpenFile(sr.ReadToEnd());
                 tabControl1.SelectedTab.Text = openFileDialog1.SafeFileName;
+            }
+        }
+
+        private void toolStripButton8_Click(object sender, EventArgs e)
+        {
+            Spreadsheet s = ((Spreadsheet)tabControl1.SelectedTab.Controls[0]);
+            if (selectX && selectY)
+            {
+                y = s.GetSelectedArray();
+                Diagram d = new Diagram(x, y);
+                d.Show();
+                selectX = false;
+                selectY = false;
+            }
+            else
+            {
+                if (!selectX)
+                {
+                    selectX = true;
+                    MessageBox.Show("Виберіть значення х");
+                }
+                else
+                {
+                    x = s.GetSelectedArray();
+                    selectY = true;
+                    MessageBox.Show("Виберіть значення у");
+                }
             }
         }
     }
