@@ -134,7 +134,11 @@ namespace CMT.Models
 		
 		private System.Nullable<System.DateTime> _Finished;
 		
+		private bool _Deleted;
+		
 		private EntityRef<Group> _Group;
+		
+		private EntityRef<User> _User;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -150,11 +154,14 @@ namespace CMT.Models
     partial void OnCreatedByChanged();
     partial void OnFinishedChanging(System.Nullable<System.DateTime> value);
     partial void OnFinishedChanged();
+    partial void OnDeletedChanging(bool value);
+    partial void OnDeletedChanged();
     #endregion
 		
 		public Champ()
 		{
 			this._Group = default(EntityRef<Group>);
+			this._User = default(EntityRef<User>);
 			OnCreated();
 		}
 		
@@ -229,6 +236,10 @@ namespace CMT.Models
 			{
 				if ((this._CreatedBy != value))
 				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnCreatedByChanging(value);
 					this.SendPropertyChanging();
 					this._CreatedBy = value;
@@ -258,6 +269,26 @@ namespace CMT.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Deleted", DbType="Bit NOT NULL")]
+		public bool Deleted
+		{
+			get
+			{
+				return this._Deleted;
+			}
+			set
+			{
+				if ((this._Deleted != value))
+				{
+					this.OnDeletedChanging(value);
+					this.SendPropertyChanging();
+					this._Deleted = value;
+					this.SendPropertyChanged("Deleted");
+					this.OnDeletedChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Champ_Group", Storage="_Group", ThisKey="Id", OtherKey="Id", IsUnique=true, IsForeignKey=false)]
 		public Group Group
 		{
@@ -283,6 +314,40 @@ namespace CMT.Models
 						value.Champ = this;
 					}
 					this.SendPropertyChanged("Group");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Champ", Storage="_User", ThisKey="CreatedBy", OtherKey="Id", IsForeignKey=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.Champs.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.Champs.Add(this);
+						this._CreatedBy = value.Id;
+					}
+					else
+					{
+						this._CreatedBy = default(int);
+					}
+					this.SendPropertyChanged("User");
 				}
 			}
 		}
@@ -338,6 +403,8 @@ namespace CMT.Models
 		
 		private bool _Deleted;
 		
+		private EntitySet<Champ> _Champs;
+		
 		private EntitySet<GroupUser> _GroupUsers;
 		
 		private EntitySet<Match> _Matches;
@@ -376,6 +443,7 @@ namespace CMT.Models
 		
 		public User()
 		{
+			this._Champs = new EntitySet<Champ>(new Action<Champ>(this.attach_Champs), new Action<Champ>(this.detach_Champs));
 			this._GroupUsers = new EntitySet<GroupUser>(new Action<GroupUser>(this.attach_GroupUsers), new Action<GroupUser>(this.detach_GroupUsers));
 			this._Matches = new EntitySet<Match>(new Action<Match>(this.attach_Matches), new Action<Match>(this.detach_Matches));
 			this._Matches1 = new EntitySet<Match>(new Action<Match>(this.attach_Matches1), new Action<Match>(this.detach_Matches1));
@@ -622,6 +690,19 @@ namespace CMT.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Champ", Storage="_Champs", ThisKey="Id", OtherKey="CreatedBy")]
+		public EntitySet<Champ> Champs
+		{
+			get
+			{
+				return this._Champs;
+			}
+			set
+			{
+				this._Champs.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_GroupUser", Storage="_GroupUsers", ThisKey="Id", OtherKey="UserId")]
 		public EntitySet<GroupUser> GroupUsers
 		{
@@ -679,6 +760,18 @@ namespace CMT.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_Champs(Champ entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_Champs(Champ entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
 		}
 		
 		private void attach_GroupUsers(GroupUser entity)
