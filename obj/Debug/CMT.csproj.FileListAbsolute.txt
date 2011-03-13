@@ -1,0 +1,5 @@
+E:\SMile\InterLogic\CMT\bin\CMT.dll
+E:\SMile\InterLogic\CMT\bin\CMT.pdb
+E:\SMile\InterLogic\CMT\obj\Debug\ResolveAssemblyReference.cache
+E:\SMile\InterLogic\CMT\obj\Debug\CMT.dll
+E:\SMile\InterLogic\CMT\obj\Debug\CMT.pdb
