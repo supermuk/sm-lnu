@@ -88,6 +88,15 @@ namespace CMT.Models
 
             [ScaffoldColumn(false)]
             public DateTime Created { get; set; }
+
+            [ScaffoldColumn(false)]
+            public DateTime Finished { get; set; }
+
+            [ScaffoldColumn(false)]
+            public int CreatedBy { get; set; }
+
+            [ScaffoldColumn(false)]
+            public bool Deleted { get; set; }
         }        
     }
 }

@@ -9,6 +9,11 @@ namespace CMT.Providers
     {
         protected Storage mStorage;
 
+        public CustomMembershipProvider()
+        {
+            mStorage = new Storage();
+        }
+
         public CustomMembershipProvider(Storage userStorage)
         {
             mStorage = userStorage;
@@ -26,7 +31,7 @@ namespace CMT.Providers
                 var user = new User
                 {
                     UserName = username,
-                    Password = password,
+                    Password = mStorage.EncryptPassword(password),
                     Email = email
                 };
 
@@ -111,7 +116,7 @@ namespace CMT.Providers
 
         public MembershipUser GetMembershipUser(User user)
         {
-            return new MembershipUser(Name, user.UserName, user.Id, user.Email, "", "", true,
+            return new MembershipUser("CustomMembershipProvider", user.UserName, user.Id, user.Email, "", "", true,
                                             false, DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now, DateTime.Now);
         }
 

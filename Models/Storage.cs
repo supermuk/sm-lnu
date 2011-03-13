@@ -19,7 +19,15 @@ namespace CMT.Models
         public int CreateUser(User user)
         {
             var db = GetDB();
-            
+
+            user.Administrator = false;
+            user.Created = DateTime.Now;
+            user.DisplayName = user.UserName;
+            user.Wins = 0;
+            user.Losses = 0;
+            user.Drafts = 0;
+            user.Rating = 0;
+
             db.Users.InsertOnSubmit(user);
             
             db.SubmitChanges();
@@ -91,6 +99,7 @@ namespace CMT.Models
         {
             var db = GetDB();
 
+            champ.CreatedBy = GetCurrentUser().Id;
             champ.Created = DateTime.Now;
 
             db.Champs.InsertOnSubmit(champ);
@@ -101,12 +110,32 @@ namespace CMT.Models
 
         public Champ GetChamp(Func<Champ, bool> predicate)
         {
-            return GetDB().Champs.FirstOrDefault(predicate);
+            return GetDB().Champs.Where(c => c.Deleted == false).FirstOrDefault(predicate);
         }
 
         public IEnumerable<Champ> GetChamps()
         {
-            return GetDB().Champs.AsEnumerable();
+            return GetDB().Champs.Where(c => c.Deleted == false).AsEnumerable();
+        }
+
+        public void DeleteChamp(int id)
+        {
+            var db = GetDB();
+
+            var champ = db.Champs.Single(c => c.Id == id);
+            champ.Deleted = true;
+
+            db.SubmitChanges();
+        }
+        
+        public void UpdateChamp(Champ champ)
+        {
+            var db = GetDB();
+
+            var newChamp = db.Champs.Single(c => c.Id == champ.Id);
+            newChamp.Name = champ.Name;
+
+            db.SubmitChanges();
         }
 
         #endregion
