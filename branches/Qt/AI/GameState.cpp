@@ -35,6 +35,16 @@ GameState::GameState(const GameState &state)
     }
 }
 
+GameState::~GameState()
+{
+    for(int i = 0; i < mSize; ++i)
+    {
+        delete[] mField[i];
+    }
+
+    delete[] mField;
+}
+
 bool GameState::operator ==(const GameState& state)const
 {
     if(mSize != state.mSize)

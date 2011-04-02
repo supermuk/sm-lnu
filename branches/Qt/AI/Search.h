@@ -6,6 +6,7 @@
 #include "DataStructures/BaseQueue.h"
 #include "DataStructures/HashSet.h"
 #include "DataStructures/FifoQueue.h"
+#include "DataStructures/PriorityQueue.h"
 
 class Search
 {
@@ -13,13 +14,16 @@ public:
     template<class TState>
         bool BreadthFirstSearch(BaseProblem<TState>* problem);
 
+    template<class TState>
+        bool UniformCostSearch(BaseProblem<TState>* problem);
+
 };
 
 
 template<class TState>
     bool Search::BreadthFirstSearch(BaseProblem<TState> *problem)
     {
-        BaseNode<TState> node (0, problem->GetInitState(), 0);
+        BaseNode<TState> node (NULL, problem->GetInitState(), 0);
 
         if(problem->IsGoalState(node.GetState()))
         {
@@ -65,5 +69,21 @@ template<class TState>
         return false;
     }
 
+template<class TState>
+    bool Search::UniformCostSearch(BaseProblem<TState> *problem)
+    {
+        BaseNode<TState> node(NULL, problem->GetInitState(), 0);
+
+        PriorityQueue<BaseNode<TState> > *frontierNodes = new PriorityQueue<BaseNode<TState> > ();
+        frontierNodes->Add(node, node.GetPathCost());
+
+        HashSet<const TState*> *frontierStates = new HashSet<const TState*>();
+        frontierStates->Add(node.GetState());
+        HashSet<const TState*> *exploredStates = new HashSet<const TState*>();
+        while(true)
+        {
+            List<BaseAction<TState>*> actions = problem->GetActions(node.GetState());
+        }
+    }
 
 #endif // SEARCH_H

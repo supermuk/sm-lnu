@@ -5,7 +5,6 @@
 #include "GameState.h"
 
 
-
 class GameAction: public BaseAction<GameState>
 {
 public:
