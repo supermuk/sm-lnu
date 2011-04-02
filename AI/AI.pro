@@ -20,4 +20,5 @@ HEADERS += \
     Position.h \
     GameState.h \
     GameProblem.h \
-    GameAction.h
+    GameAction.h \
+    DataStructures/PriorityQueue.h

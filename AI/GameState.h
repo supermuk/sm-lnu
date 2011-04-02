@@ -13,6 +13,8 @@ public:
     GameState(int size);
     GameState(const GameState& state);
 
+    ~GameState();
+
     Position GetEmptyPosition() const;
     int GetSize()const;
     void Swap(Position p1, Position p2);

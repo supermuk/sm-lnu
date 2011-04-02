@@ -16,6 +16,7 @@ template<class TState>
         BaseNode(const BaseNode<TState>* parent, const TState* state, int pathCost);
 
         const TState* GetState();
+        int GetPathCost();
 
         BaseNode<TState> ChildNode(BaseProblem<TState>* problem, BaseAction<TState>* action);
 
@@ -39,6 +40,12 @@ template<class TState>
     BaseNode<TState> BaseNode<TState>::ChildNode(BaseProblem<TState>* problem, BaseAction<TState>* action)
     {
         return BaseNode(this, problem->Result(mState, action), mPathCost + problem->StepCost(mState, action));
+    }
+
+template<class TState>
+    int BaseNode<TState>::GetPathCost()
+    {
+        return mPathCost;
     }
 
 #endif // BASENODE_H
