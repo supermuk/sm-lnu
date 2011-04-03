@@ -1,6 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
+#include <QObject>
 #include "BaseClasses/BaseProblem.h"
 #include "BaseClasses/BaseNode.h"
 #include "DataStructures/BaseQueue.h"
@@ -8,15 +9,22 @@
 #include "DataStructures/FifoQueue.h"
 #include "DataStructures/PriorityQueue.h"
 
-class Search
+class Search: public QObject
 {
+    Q_OBJECT
 public:
+    Search():QObject() {}
+    ~Search() {}
+
     template<class TState>
         bool BreadthFirstSearch(BaseProblem<TState>* problem);
 
     template<class TState>
         bool UniformCostSearch(BaseProblem<TState>* problem);
 
+signals:
+    //template<class TState>
+        void NodeAdded(QString parentStateName, QString stateName, int pathCost);
 };
 
 
@@ -52,7 +60,7 @@ template<class TState>
             for(int i = 0; i < actions.Size(); ++i)
             {
                 BaseNode<TState> child = node.ChildNode(problem, actions[i]);
-
+                delete actions[i];
                 if(!exploredStates->Contains(child.GetState()) && !frontierStates->Contains(child.GetState()))
                 {
                     if(problem->IsGoalState(child.GetState()))
@@ -60,7 +68,9 @@ template<class TState>
                         return true;
                     }
 
-                    exploredStates->Add(child.GetState());
+                    frontierStates->Add(child.GetState());
+                    frontierNodes->Add(child);
+                    emit NodeAdded(child.GetParent()->GetState()->GetStateName(), child.GetState()->GeStateName(), child.GetPathCost());
                 }
             }
 
@@ -84,6 +94,9 @@ template<class TState>
         {
             List<BaseAction<TState>*> actions = problem->GetActions(node.GetState());
         }
+        return false;
     }
+
+
 
 #endif // SEARCH_H

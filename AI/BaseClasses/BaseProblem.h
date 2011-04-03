@@ -41,7 +41,7 @@ template<class TState>
 template<class TState>
     bool BaseProblem<TState>::IsGoalState(const TState* state)const
     {
-        return (*state) == (*mInitState);
+        return (*state) == (*mGoalState);
     }
 
 template<class TState>

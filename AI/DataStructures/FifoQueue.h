@@ -12,7 +12,7 @@ template<class T>
     public:
         FifoQueue();
 
-        const T& Pop();
+        const T Pop();
         void Add(const T& item);
         bool IsEmpty() const;
     };
@@ -24,9 +24,9 @@ template<class T>
     }
 
 template<class T>
-    const T& FifoQueue<T>::Pop()
+    const T FifoQueue<T>::Pop()
     {
-        const T& item = mQueue.last();
+        T item = mQueue.last();
 
         mQueue.pop_back();
 

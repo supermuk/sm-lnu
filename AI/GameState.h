@@ -2,12 +2,13 @@
 #define GAMESTATE_H
 
 #include "BaseClasses/BaseState.h"
+#include <QString>
 #include "Position.h"
 
 class GameState : public BaseState
 {
 private:
-    int ** mField;
+    char** mField;
     int mSize;
 public:
     GameState(int size);
@@ -17,7 +18,9 @@ public:
 
     Position GetEmptyPosition() const;
     int GetSize()const;
+    QString GetStateName() const;
     void Swap(Position p1, Position p2);
+
 
     bool operator == (const GameState& state) const;
 
