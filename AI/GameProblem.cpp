@@ -34,3 +34,8 @@ GameState* GameProblem::Result(const GameState* state, const BaseAction<GameStat
 {
     return action->Do(state);
 }
+
+QString GameProblem::GetStateName(const GameState *state)
+{
+    return state->GetStateName();
+}

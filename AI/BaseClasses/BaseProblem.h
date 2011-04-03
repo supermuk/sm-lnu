@@ -22,6 +22,7 @@ template<class TState>
         int StepCost(const TState* state, const BaseAction<TState>* action) const;
         virtual List<BaseAction<TState>*> GetActions(const TState* state) const = 0;
         virtual TState* Result(const TState* state, const BaseAction<TState>* action) = 0;
+        virtual QString GetStateName(const TState* state) = 0;
     };
 
 template<class TState>
