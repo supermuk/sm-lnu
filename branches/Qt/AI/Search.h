@@ -23,8 +23,7 @@ public:
         bool UniformCostSearch(BaseProblem<TState>* problem);
 
 signals:
-    //template<class TState>
-        void NodeAdded(QString parentStateName, QString stateName, int pathCost);
+    void NodeAdded(QString parentStateName, QString stateName, int pathCost);
 };
 
 
@@ -43,6 +42,8 @@ template<class TState>
         HashSet<const TState*> *frontierStates = new HashSet<const TState*>();
         frontierStates->Add(node.GetState());
         HashSet<const TState*> *exploredStates = new HashSet<const TState*>();
+
+        emit NodeAdded(QString(), problem->GetStateName(node.GetState()), node.GetPathCost());
 
         while(true)
         {
@@ -63,6 +64,8 @@ template<class TState>
                 delete actions[i];
                 if(!exploredStates->Contains(child.GetState()) && !frontierStates->Contains(child.GetState()))
                 {
+                    emit NodeAdded(problem->GetStateName(child.GetParent()->GetState()), problem->GetStateName(child.GetState()), child.GetPathCost());
+
                     if(problem->IsGoalState(child.GetState()))
                     {
                         return true;
@@ -70,7 +73,7 @@ template<class TState>
 
                     frontierStates->Add(child.GetState());
                     frontierNodes->Add(child);
-                    emit NodeAdded(child.GetParent()->GetState()->GetStateName(), child.GetState()->GeStateName(), child.GetPathCost());
+
                 }
             }
 

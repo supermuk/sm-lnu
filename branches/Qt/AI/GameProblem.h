@@ -17,6 +17,7 @@ public:
 
     List<BaseAction<GameState>*> GetActions(const GameState* state)const;
     GameState* Result(const GameState* state, const BaseAction<GameState>* action);
+    QString GetStateName(const GameState* state);
 };
 
 #endif // GAMEPROBLEM_H

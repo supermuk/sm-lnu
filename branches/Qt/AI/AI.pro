@@ -3,7 +3,8 @@ SOURCES += \
     main.cpp \
     GameState.cpp \
     GameProblem.cpp \
-    GameAction.cpp
+    GameAction.cpp \
+    GameWidget.cpp
 
 HEADERS += \
     DataStructures/List.h \
@@ -21,4 +22,6 @@ HEADERS += \
     GameState.h \
     GameProblem.h \
     GameAction.h \
-    DataStructures/PriorityQueue.h
+    DataStructures/PriorityQueue.h \
+    DataStructures/NodeQueue.h \
+    GameWidget.h

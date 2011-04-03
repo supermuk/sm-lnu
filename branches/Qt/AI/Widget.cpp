@@ -5,37 +5,40 @@ Widget::Widget(QWidget *parent) :
 {
     QHBoxLayout *hbox = new QHBoxLayout();
 
-    button = new QPushButton("Go");
-    hbox->addWidget(button);
-
-    tree = new QTreeWidget();
-    QStringList list;
-
-    list << "test" << "bob" << "lol";
-
-    tree->setColumnCount(3);
-    tree->addTopLevelItem(new QTreeWidgetItem(list));
-    tree->topLevelItem(0)->addChild(new QTreeWidgetItem(list));
 
 
-    //tree->setModel();
-    //QAction *action = new QAction(QString("test"), tree);
-    //tree->addAction(action);
-    hbox->addWidget(tree);
+    mTree = new QTreeWidget();
+    //mTree->setFixedWidth(200);
+    mTree->setColumnCount(2);
+    hbox->addWidget(mTree);
+
+
+    QVBoxLayout *vbox = new QVBoxLayout();
+
+    mGameWidget = new GameWidget(4);
+    vbox->addWidget(mGameWidget);
+
+    mGoButton = new QPushButton("Go");
+    vbox->addWidget(mGoButton);
+
+    hbox->addLayout(vbox);
 
     setLayout(hbox);
 
-    connect(button, SIGNAL(clicked()), this, SLOT(Go()));
+    connect(mGoButton, SIGNAL(clicked()), this, SLOT(Go()));
+    connect(mTree, SIGNAL(itemActivated(QTreeWidgetItem*,int)), mGameWidget, SLOT(SetGame(QTreeWidgetItem*,int)));
 }
 
 void Widget::Go()
 {
     Search s;
 
+    connect(&s, SIGNAL(NodeAdded(QString,QString,int)), this, SLOT(AddNode(QString,QString,int)));
+
     GameState *init = new GameState(4);
 
     GameState *goal= new GameState(4);
-   // init->Swap(Position(0,0), Position(0, 1));
+    //init->Swap(Position(0,0), Position(0, 1));
     init->Swap(Position(3,3), Position(2, 3));
     init->Swap(Position(2,3), Position(2, 2));
 
@@ -43,20 +46,25 @@ void Widget::Go()
     bool res = s.BreadthFirstSearch<GameState>(new GameProblem(init, goal));
     if(res)
     {
-    button->setText("Yes");
+        mGoButton->setText("Yes");
     }else
     {
-        button->setText("No");
+        mGoButton->setText("No");
     }
 }
 
-void Widget::AddNode(const BaseNode<GameState>& node)
+void Widget::AddNode(QString parentName, QString name, int cost)
 {
-    QString parentName =  node.GetParent()->GetState()->GetStateName();
-
     QStringList list;
-    list << node.GetState()->GetStateName() << QString(node.GetPathCost()) << ":D";
 
-    tree->findItems(parentName, Qt::MatchExactly).first()->addChild(new QTreeWidgetItem(list));
+    list << name << QString::number(cost);
 
+    if(parentName == QString())
+    {
+        mTree->addTopLevelItem(new QTreeWidgetItem(list));
+    }
+    else
+    {
+        mTree->findItems(parentName, Qt::MatchExactly | Qt::MatchRecursive).first()->addChild(new QTreeWidgetItem(list));
+    }
 }
