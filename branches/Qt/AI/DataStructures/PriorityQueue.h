@@ -31,6 +31,7 @@ template<class T>
 
         return value;
     }
+
 template<class T>
     bool PriorityQueue<T>::IsEmpty() const
     {
