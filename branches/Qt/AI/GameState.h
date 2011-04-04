@@ -20,6 +20,8 @@ public:
     int GetSize()const;
     QString GetStateName() const;
     void Swap(Position p1, Position p2);
+    void SetItem(int x, int y, char value);
+    char GetItem(int x, int y);
 
 
     bool operator == (const GameState& state) const;

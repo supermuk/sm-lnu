@@ -93,9 +93,44 @@ template<class TState>
         HashSet<const TState*> *frontierStates = new HashSet<const TState*>();
         frontierStates->Add(node.GetState());
         HashSet<const TState*> *exploredStates = new HashSet<const TState*>();
+
         while(true)
         {
+            if(frontierNodes->IsEmpty())
+            {
+                return false;
+            }
+
+            node = frontierNodes->Pop();
+            frontierStates->Remove(node.GetState());
+
+            if(problem->IsGoalState(node.GetState()))
+            {
+                return true;
+            }
+
+            exploredStates->Add(node.GetState());
+
             List<BaseAction<TState>*> actions = problem->GetActions(node.GetState());
+            for(int i = 0; i < actions.Size(); ++i)
+            {
+                BaseNode<TState> child = node.ChildNode(problem, actions[i]);
+                delete actions[i];
+                if(!exploredStates->Contains(child.GetState()) && !frontierStates->Contains(child.GetState()))
+                {
+                    emit NodeAdded(problem->GetStateName(child.GetParent()->GetState()), problem->GetStateName(child.GetState()), child.GetPathCost());
+
+                    if(problem->IsGoalState(child.GetState()))
+                    {
+                        return true;
+                    }
+
+                    frontierStates->Add(child.GetState());
+                    frontierNodes->Add(child);
+
+                }
+            }
+
         }
         return false;
     }

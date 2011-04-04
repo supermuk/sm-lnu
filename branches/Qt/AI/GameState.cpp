@@ -12,10 +12,12 @@ GameState::GameState(int size)
 
         for(int j = 0; j < mSize; ++j)
         {
-            mField[i][j] = i * mSize + j + 1;
+            char c = i * mSize + j + 1;
+
+            mField[i][j] = c > 9 ? c + 55 : c + 48;
         }
     }
-    mField[mSize-1][mSize-1] = 0;
+    mField[mSize-1][mSize-1] = ' ';
 }
 
 GameState::GameState(const GameState &state)
@@ -71,7 +73,7 @@ Position GameState::GetEmptyPosition() const
     {
         for(int j = 0; j < mSize; j++)
         {
-            if(mField[i][j] == 0)
+            if(mField[i][j] == ' ')
             {
                 return Position(i, j);
             }
@@ -93,8 +95,7 @@ QString GameState::GetStateName() const
     {
         for(int j = 0; j < mSize; j++)
         {
-            char c = mField[i][j];
-            s.append( c > 9 ? c + 55 : c + 48);
+            s.append(mField[i][j]);
         }
     }
     return s;
@@ -105,4 +106,14 @@ void GameState::Swap(Position p1, Position p2)
     int tmp = mField[p1.Row][p1.Column];
     mField[p1.Row][p1.Column] = mField[p2.Row][p2.Column];
     mField[p2.Row][p2.Column] = tmp;
+}
+
+void GameState::SetItem(int x, int y, char value)
+{
+    mField[x][y] = value;
+}
+
+char GameState::GetItem(int x, int y)
+{
+    return mField[x][y];
 }
