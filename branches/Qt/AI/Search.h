@@ -124,7 +124,9 @@ template<class TState>
                     {
                         return true;
                     }
-
+                }
+                if
+                {
                     frontierStates->Add(child.GetState());
                     frontierNodes->Add(child);
 
