@@ -8,16 +8,16 @@ template<class TState>
     class AStarSearch: public BaseSearch<TState>
     {
     private:
-        int (*mHeuristicFuncPtr)(const BaseNode<TState>& );
+        int (*mHeuristicFuncPtr)(const BaseNode<TState>* );
 
     protected:
-        int F(const BaseNode<TState> &node)
+        int F(const BaseNode<TState>* node)
         {
-            return node.GetPathCost() + (*mHeuristicFuncPtr)(node);
+            return node->GetPathCost() + (*mHeuristicFuncPtr)(node);
         }
 
     public:
-        AStarSearch(BaseProblem<TState>* problem, int (* heuristicFuncPtr)(const BaseNode<TState>&))
+        AStarSearch(BaseProblem<TState>* problem, int (* heuristicFuncPtr)(const BaseNode<TState>*))
             :BaseSearch<TState>(problem)
         {
             mHeuristicFuncPtr = heuristicFuncPtr;

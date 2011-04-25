@@ -95,7 +95,16 @@ QString GameState::GetStateName() const
     {
         for(int j = 0; j < mSize; j++)
         {
-            s.append(mField[i][j]);
+            char c = mField[i][j] ;
+            if(c == 0)
+            {
+                c= ' ';
+            }
+            else
+            {
+                c = c > 9 ? c + 55 : c + 48;
+            }
+            s.append(c);
         }
     }
     return s;
@@ -113,7 +122,7 @@ void GameState::SetItem(int x, int y, char value)
     mField[x][y] = value;
 }
 
-char GameState::GetItem(int x, int y)
+char GameState::GetItem(int x, int y)const
 {
     return mField[x][y];
 }

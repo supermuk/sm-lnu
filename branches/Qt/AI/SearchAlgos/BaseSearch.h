@@ -15,7 +15,7 @@ template<class TState>
         BaseNodeQueue<TState> *mFrontier;
         StateTable<TState> *mExplored;
 
-        int virtual F(const BaseNode<TState>& node) = 0;
+        int virtual F(const BaseNode<TState>* node) = 0;
 
         Solution<TState> GetSolution(const BaseNode<TState>* node);
         Solution<TState> GetFailure();
@@ -56,13 +56,11 @@ template<class TState>
         Solution<TState> s;
         s.IsFailure = false;
         s.PathCost = node->GetPathCost();
-        s.States.append(*(node->GetState()));
 
-        const BaseNode<TState>* parent = node->GetParent();
-        while(parent != NULL)
+        while(node != NULL)
         {
-            s.States.append(*parent->GetState());
-            parent = parent->GetParent();
+            s.States.append(*(node->GetState()));
+            node = node->GetParent();
 
         }
         return s;
@@ -81,7 +79,7 @@ template<class TState>
     {
         const BaseNode<TState>* node = new BaseNode<TState>(NULL, mProblem->GetInitState(), 0);
 
-        mFrontier->Add(node);
+        mFrontier->Add(node, F(node));
 
         while(!mFrontier->IsEmpty())
         {
@@ -108,7 +106,7 @@ template<class TState>
                     {
                         return GetSolution(child);
                     }
-                    mFrontier->Add(child);
+                    mFrontier->Add(child, F(child));
                 }
                 else if(frontierContains)
                 {

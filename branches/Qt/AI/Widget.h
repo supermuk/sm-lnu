@@ -26,6 +26,7 @@ class Widget : public QWidget
 {
     Q_OBJECT
 private:
+    int SolutionMaxLength;
     QPushButton *mGoButton;
     QPushButton *mRandomButton;
     QTreeWidget *mTree;

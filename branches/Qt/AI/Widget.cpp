@@ -3,6 +3,8 @@
 Widget::Widget(QWidget *parent) :
     QWidget(parent)
 {
+    SolutionMaxLength = 50000;
+
     QHBoxLayout *hbox = new QHBoxLayout();
 
     mTree = new QTreeWidget();
@@ -22,6 +24,9 @@ Widget::Widget(QWidget *parent) :
     mAlgoComboBox = new QComboBox();
     mAlgoComboBox->addItem("BFS");
     mAlgoComboBox->addItem("UCS");
+    mAlgoComboBox->addItem("A* Manhattan");
+    mAlgoComboBox->addItem( "A* Hamming");
+
     hboxBottom->addWidget(mAlgoComboBox);
 
     mGoButton = new QPushButton("Go");
@@ -52,32 +57,27 @@ Widget::Widget(QWidget *parent) :
 
 void Widget::Go()
 {
-    while(mTree->topLevelItemCount() != 0)
-    {
-        delete mTree->takeTopLevelItem(0);
-    }
-
-    QString algo = mAlgoComboBox->currentText();
-
     BaseSearch<GameState>* s;
-    //connect(&s, SIGNAL(NodeAdded(QString,QString,int)), this, SLOT(AddNode(QString,QString,int)));
 
     GameState *init = mGameWidget->GetState();
     GameState *goal= new GameState(mSizeSpinBox->value());
 
     BaseProblem<GameState> *problem = new GameProblem(init, goal);
 
-    if(algo == QString("BFS"))
+    switch(mAlgoComboBox->currentIndex())
     {
+    case 0:
          s = new BreadthFirstSearch<GameState>(problem);
-    }
-    else if( algo == QString("UCS"))
-    {
+        break;
+    case 1:
         s = new UniformCostSearch<GameState>(problem);
-    }
-    else if(algo == QString("A*Manhattan"))
-    {
+        break;
+    case 2:
         s = new AStarSearch<GameState>(problem, &GameProblem::ManhattanDistance);
+        break;
+    case 3:
+        s = new AStarSearch<GameState>(problem, &GameProblem::HammingDistance);
+        break;
     }
 
     Solution<GameState> result = s->Run();
@@ -124,6 +124,10 @@ void Widget::Random()
 
 void Widget::ShowSolution(Solution<GameState> solution)
 {
+    while(mTree->topLevelItemCount() != 0)
+    {
+        delete mTree->takeTopLevelItem(0);
+    }
 
 
     mStatLineEdit->insertPlainText("\r\nAlgo = " + mAlgoComboBox->currentText() + "\r\n");
@@ -137,21 +141,10 @@ void Widget::ShowSolution(Solution<GameState> solution)
     }
     else
     {
-        for(int i = 0; i < solution.States.count(); ++i)
+        for(int i = 0; i < solution.States.count() && i < SolutionMaxLength; ++i)
         {
             GameState state = solution.States.at(i);
-            AddNode(QString(), QString::number(state.GetHash()), i);
+            AddNode(QString(),state.GetStateName(), i);
         }
     }
-
-/*
-    QTreeWidgetItem *item = mTree->findItems(node.GetState()->GetStateName(),  Qt::MatchExactly | Qt::MatchRecursive).first();
-
-    while( item->parent() != NULL)
-    {
-        item->setExpanded(true);
-        item = item->parent();
-    }
-    item->setExpanded(true);
-*/
 }

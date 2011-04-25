@@ -8,9 +8,9 @@ template<class TState>
     class UniformCostSearch: public BaseSearch<TState>
     {
     protected:
-        int F(const BaseNode<TState> &node)
+        int F(const BaseNode<TState>* node)
         {
-            return node.GetPathCost();
+            return node->GetPathCost();
         }
     public:
         UniformCostSearch(BaseProblem<TState>* problem)
