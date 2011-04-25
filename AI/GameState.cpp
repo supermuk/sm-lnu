@@ -14,10 +14,10 @@ GameState::GameState(int size)
         {
             char c = i * mSize + j + 1;
 
-            mField[i][j] = c > 9 ? c + 55 : c + 48;
+            mField[i][j] = c;// c > 9 ? c + 55 : c + 48;
         }
     }
-    mField[mSize-1][mSize-1] = ' ';
+    mField[mSize-1][mSize-1] = 0;                   //' ';
 }
 
 GameState::GameState(const GameState &state)
@@ -73,7 +73,7 @@ Position GameState::GetEmptyPosition() const
     {
         for(int j = 0; j < mSize; j++)
         {
-            if(mField[i][j] == ' ')
+            if(mField[i][j] == 0)
             {
                 return Position(i, j);
             }
@@ -116,4 +116,19 @@ void GameState::SetItem(int x, int y, char value)
 char GameState::GetItem(int x, int y)
 {
     return mField[x][y];
+}
+
+int GameState::GetHash()const
+{
+    int hash = 0;
+    int tmp = 1;
+    for(int i = 0; i < mSize; ++i)
+    {
+        for(int j = 0; j < mSize; j++)
+        {
+            hash += (mField[i][j] + 1) * tmp;
+            tmp*= 10;
+        }
+    }
+    return hash;
 }

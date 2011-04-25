@@ -3,6 +3,7 @@
 
 #include "BaseClasses/BaseProblem.h"
 #include "BaseClasses/BaseState.h"
+#include "BaseClasses/BaseNode.h"
 #include "DataStructures/List.h"
 #include "GameState.h"
 #include "GameAction.h"
@@ -18,6 +19,11 @@ public:
     List<BaseAction<GameState>*> GetActions(const GameState* state)const;
     GameState* Result(const GameState* state, const BaseAction<GameState>* action);
     QString GetStateName(const GameState* state);
+
+    static int ManhattanDistance(const BaseNode<GameState>& node)
+    {
+        return 1;
+    }
 };
 
 #endif // GAMEPROBLEM_H

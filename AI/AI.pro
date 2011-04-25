@@ -9,7 +9,6 @@ SOURCES += \
 HEADERS += \
     DataStructures/List.h \
     DataStructures/List.h \
-    DataStructures/HashSet.h \
     DataStructures/FifoQueue.h \
     DataStructures/BaseQueue.h \
     BaseClasses/BaseState.h \
@@ -22,6 +21,13 @@ HEADERS += \
     GameState.h \
     GameProblem.h \
     GameAction.h \
-    DataStructures/PriorityQueue.h \
     DataStructures/NodeQueue.h \
-    GameWidget.h
+    GameWidget.h \
+    DataStructures/StateTable.h \
+    DataStructures/NodePriorityQueue.h \
+    DataStructures/BaseNodeQueue.h \
+    Solution.h \
+    SearchAlgos/UniformCostSearch.h \
+    SearchAlgos/BaseSearch.h \
+    SearchAlgos/BreadthFirstSearch.h \
+    SearchAlgos/AStarSearch.h

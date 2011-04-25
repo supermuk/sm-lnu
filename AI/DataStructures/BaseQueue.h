@@ -6,7 +6,7 @@ template<class T>
     {
     public:
         virtual const T Pop()=0;
-        virtual void Add(const T& item) = 0;
+        virtual void Add(const T& item, int priority) = 0;
         virtual bool IsEmpty() const = 0;
     };
 

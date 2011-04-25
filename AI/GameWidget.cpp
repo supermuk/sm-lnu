@@ -56,7 +56,7 @@ void GameWidget::SetGame(QTreeWidgetItem* item, QTreeWidgetItem*)
 
 void GameWidget::SetGame(QString stateName)
 {
-    mSize = sqrt(stateName.length());
+    mSize = sqrt((float)stateName.length());
 
     CreateGame(mSize);
 
@@ -64,7 +64,17 @@ void GameWidget::SetGame(QString stateName)
     {
         for(int j = 0; j < mSize; ++j)
         {
-            mState->SetItem(i, j, stateName[i + mSize * j].toAscii());
+            char val = stateName[i + mSize * j].toAscii();
+            if(val == ' ')
+            {
+                val = 0;
+            }
+            else
+            {
+                val = val > 64 ? val - 55 : val - 48;
+            }
+
+            mState->SetItem(i, j, val);
         }
     }
 
@@ -78,7 +88,18 @@ void GameWidget::FillTable()
         for(int j = 0; j < mSize; ++j)
         {
             QTableWidgetItem *cell = new QTableWidgetItem();
-            cell->setText(QString(mState->GetItem(i, j)));
+
+            char val = mState->GetItem(i, j);
+            if(val == 0)
+            {
+                val = ' ';
+            }
+            else
+            {
+                val = val > 9 ? val + 55 : val + 48;
+            }
+
+            cell->setText(QString(val));
             cell->setTextAlignment(Qt::AlignCenter);
             table->setItem(i, j, cell);
         }

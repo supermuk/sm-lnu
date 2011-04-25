@@ -23,6 +23,7 @@ public:
     void SetItem(int x, int y, char value);
     char GetItem(int x, int y);
 
+    int GetHash() const;
 
     bool operator == (const GameState& state) const;
 
