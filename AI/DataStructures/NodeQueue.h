@@ -12,15 +12,13 @@ template<class TState>
     class NodeQueue: public BaseNodeQueue<TState>
     {
     public:
-        void Add(const BaseNode<TState>& node, int priority = 0);
+        void AddNode(const BaseNode<TState>* node, int priority);
     };
 
 template<class TState>
-    void NodeQueue<TState>::Add(const BaseNode<TState>& node, int priority)
+    void NodeQueue<TState>::AddNode(const BaseNode<TState>* node, int priority)
     {
         this->mNodes.insertMulti(priority, node);
-
-        this->BaseNodeQueue<TState>::Add(node);
     }
 
 

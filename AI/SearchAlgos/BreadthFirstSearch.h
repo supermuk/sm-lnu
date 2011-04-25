@@ -8,7 +8,7 @@ template<class TState>
     class BreadthFirstSearch: public BaseSearch<TState>
     {
     protected:
-        int F(const BaseNode<TState> &node)
+        int F(const BaseNode<TState>* node)
         {
             return 0;
         }

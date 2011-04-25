@@ -23,6 +23,7 @@ template<class TState>
 
         const BaseNode<TState>* Pop();
         void Add(const BaseNode<TState>* node, int priority = 0);
+        void virtual AddNode(const BaseNode<TState>* node, int priority) = 0;
         bool IsEmpty() const;
         bool Contains(const TState* state);
         void virtual Update(const BaseNode<TState>* node, int priority = 0);
@@ -41,6 +42,8 @@ template<class TState>
 template<class TState>
     void BaseNodeQueue<TState>::Add(const BaseNode<TState>* node, int priority)
     {
+        AddNode(node, priority);
+
         this->mStates.Add(node->GetState());
         if(mNodes.count() > MaxCount)
         {

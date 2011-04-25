@@ -11,7 +11,7 @@ template<class TState>
     private:
         int mSize;
     public:
-        void Add(const BaseNode<TState>& node, int priority);
+        void AddNode(const BaseNode<TState>* node, int priority);
         const BaseNode<TState> Pop();
         void Update(const BaseNode<TState>& node, int priority);
         int Find(const BaseNode<TState>& node, int priority);
@@ -19,7 +19,7 @@ template<class TState>
    };
 
 template<class TState>
-    void NodePriorityQueue<TState>::Add(const BaseNode<TState> &node, int priority)
+    void NodePriorityQueue<TState>::AddNode(const BaseNode<TState>* node, int priority)
     {
         mSize++;
 
@@ -28,8 +28,6 @@ template<class TState>
         //this->mNodes.insert(pos, node);
 
         this->mNodes.insert(priority, node);
-
-        this->BaseNodeQueue<TState>::Add(node);
     }
 /*
 template<class TState>

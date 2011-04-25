@@ -64,7 +64,7 @@ void GameWidget::SetGame(QString stateName)
     {
         for(int j = 0; j < mSize; ++j)
         {
-            char val = stateName[i + mSize * j].toAscii();
+            char val = stateName[j + mSize * i].toAscii();
             if(val == ' ')
             {
                 val = 0;

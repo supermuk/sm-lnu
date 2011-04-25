@@ -20,10 +20,9 @@ public:
     GameState* Result(const GameState* state, const BaseAction<GameState>* action);
     QString GetStateName(const GameState* state);
 
-    static int ManhattanDistance(const BaseNode<GameState>& node)
-    {
-        return 1;
-    }
+    static int ManhattanDistance(const BaseNode<GameState>* node);
+    static int HammingDistance(const BaseNode<GameState>* node);
+
 };
 
 #endif // GAMEPROBLEM_H
