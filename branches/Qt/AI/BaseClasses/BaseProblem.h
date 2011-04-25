@@ -3,7 +3,7 @@
 
 #include "BaseClasses/BaseAction.h"
 #include "DataStructures/BaseQueue.h"
-#include "DataStructures/HashSet.h"
+#include "DataStructures/StateTable.h"
 #include "DataStructures/FifoQueue.h"
 #include "DataStructures/List.h"
 

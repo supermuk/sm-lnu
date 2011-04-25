@@ -5,138 +5,128 @@
 #include "BaseClasses/BaseProblem.h"
 #include "BaseClasses/BaseNode.h"
 #include "DataStructures/BaseQueue.h"
-#include "DataStructures/HashSet.h"
+#include "DataStructures/StateTable.h"
 #include "DataStructures/FifoQueue.h"
-#include "DataStructures/PriorityQueue.h"
-
-class Search: public QObject
-{
-    Q_OBJECT
-public:
-    Search():QObject() {}
-    ~Search() {}
-
-    template<class TState>
-        bool BreadthFirstSearch(BaseProblem<TState>* problem);
-
-    template<class TState>
-        bool UniformCostSearch(BaseProblem<TState>* problem);
-
-signals:
-    void NodeAdded(QString parentStateName, QString stateName, int pathCost);
-};
-
+#include "DataStructures/NodeQueue.h"
+#include "DataStructures/BaseNodeQueue.h"
+#include "DataStructures/NodePriorityQueue.h"
+#include "DataStructures/NodeQueue.h"
 
 template<class TState>
-    bool Search::BreadthFirstSearch(BaseProblem<TState> *problem)
+    class Search
+    {
+
+    public:
+        BaseNodeQueue<TState> *frontier;
+        StateTable<TState> *explored;
+
+        Search();
+        ~Search();
+
+        BaseNode<TState> BreadthFirstSearch(BaseProblem<TState>* problem);
+
+        BaseNode<TState> UniformCostSearch(BaseProblem<TState> *problem);
+    };
+
+template<class TState>
+    Search<TState>::Search()
+    {
+        frontier = new NodeQueue<TState>();
+        explored = new StateTable<TState>();
+    }
+
+template<class TState>
+    Search<TState>::~Search()
+    {
+        delete frontier;
+    }
+
+template<class TState>
+    BaseNode<TState> Search<TState>::BreadthFirstSearch(BaseProblem<TState> *problem)
     {
         BaseNode<TState> node (NULL, problem->GetInitState(), 0);
 
         if(problem->IsGoalState(node.GetState()))
         {
-            return true;
+            return node;
         }
 
-        BaseQueue<BaseNode<TState> > *frontierNodes = new FifoQueue<BaseNode<TState> >();
-        frontierNodes->Add(node);
-        HashSet<const TState*> *frontierStates = new HashSet<const TState*>();
-        frontierStates->Add(node.GetState());
-        HashSet<const TState*> *exploredStates = new HashSet<const TState*>();
+        frontier->Add(node);
 
-        emit NodeAdded(QString(), problem->GetStateName(node.GetState()), node.GetPathCost());
-
-        while(true)
+        while(!frontier->IsEmpty())
         {
-            if(frontierNodes->IsEmpty())
-            {
-                return false;
-            }
+            node = frontier->Pop();
 
-            node = frontierNodes->Pop();
-            frontierStates->Remove(node.GetState());
-
-            exploredStates->Add(node.GetState());
+            explored->Add(node.GetState());
 
             List<BaseAction<TState>*> actions = problem->GetActions(node.GetState());
             for(int i = 0; i < actions.Size(); ++i)
             {
                 BaseNode<TState> child = node.ChildNode(problem, actions[i]);
                 delete actions[i];
-                if(!exploredStates->Contains(child.GetState()) && !frontierStates->Contains(child.GetState()))
-                {
-                    emit NodeAdded(problem->GetStateName(child.GetParent()->GetState()), problem->GetStateName(child.GetState()), child.GetPathCost());
 
+                if(!explored->Contains(child.GetState()) && !frontier->Contains(child.GetState()))
+                {
                     if(problem->IsGoalState(child.GetState()))
                     {
-                        return true;
+                        return child;
                     }
 
-                    frontierStates->Add(child.GetState());
-                    frontierNodes->Add(child);
-
+                    frontier->Add(child);
+                }
+                else
+                {
+                    delete child.GetState();
                 }
             }
 
         }
 
-        return false;
+        return BaseNode<TState>(NULL, NULL, -1);
     }
 
 template<class TState>
-    bool Search::UniformCostSearch(BaseProblem<TState> *problem)
+    BaseNode<TState> Search<TState>::UniformCostSearch(BaseProblem<TState> *problem)
     {
         BaseNode<TState> node(NULL, problem->GetInitState(), 0);
 
-        PriorityQueue<BaseNode<TState> > *frontierNodes = new PriorityQueue<BaseNode<TState> > ();
-        frontierNodes->Add(node, node.GetPathCost());
+        frontier = new NodePriorityQueue<TState>();
+        frontier->Add(node);
 
-        HashSet<const TState*> *frontierStates = new HashSet<const TState*>();
-        frontierStates->Add(node.GetState());
-        HashSet<const TState*> *exploredStates = new HashSet<const TState*>();
-
-        while(true)
+        while(!frontier->IsEmpty())
         {
-            if(frontierNodes->IsEmpty())
-            {
-                return false;
-            }
-
-            node = frontierNodes->Pop();
-            frontierStates->Remove(node.GetState());
+            node = frontier->Pop();
 
             if(problem->IsGoalState(node.GetState()))
             {
-                return true;
+                return node;
             }
 
-            exploredStates->Add(node.GetState());
+            explored->Add(node.GetState());
 
             List<BaseAction<TState>*> actions = problem->GetActions(node.GetState());
             for(int i = 0; i < actions.Size(); ++i)
             {
                 BaseNode<TState> child = node.ChildNode(problem, actions[i]);
                 delete actions[i];
-                if(!exploredStates->Contains(child.GetState()) && !frontierStates->Contains(child.GetState()))
-                {
-                    emit NodeAdded(problem->GetStateName(child.GetParent()->GetState()), problem->GetStateName(child.GetState()), child.GetPathCost());
 
+                bool frontierContains = frontier->Contains(child.GetState());
+
+                if(!explored->Contains(child.GetState()) && !frontierContains)
+                {
                     if(problem->IsGoalState(child.GetState()))
                     {
-                        return true;
+                        return child;
                     }
+                    frontier->Add(child);
                 }
-                if
+                else if(frontierContains)
                 {
-                    frontierStates->Add(child.GetState());
-                    frontierNodes->Add(child);
-
+                    frontier->Update(child);
                 }
             }
-
         }
-        return false;
+        return BaseNode<TState>(NULL, NULL, -1);
     }
-
-
 
 #endif // SEARCH_H

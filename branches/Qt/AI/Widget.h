@@ -8,10 +8,19 @@
 #include <QVBoxLayout>
 #include <QAction>
 #include <QSpinBox>
+#include <QComboBox>
+#include <QTextEdit>
+#include <QTime>
+
 #include <algorithm>
 #include "Search.h"
 #include "GameProblem.h"
 #include "GameWidget.h"
+#include "SearchAlgos/BaseSearch.h"
+#include "SearchAlgos/BreadthFirstSearch.h"
+#include "SearchAlgos/UniformCostSearch.h"
+#include "SearchAlgos/AStarSearch.h"
+#include "Solution.h"
 
 class Widget : public QWidget
 {
@@ -22,6 +31,9 @@ private:
     QTreeWidget *mTree;
     GameWidget *mGameWidget;
     QSpinBox *mSizeSpinBox;
+    QComboBox *mAlgoComboBox;
+    QTextEdit *mStatLineEdit;
+
 public:
     explicit Widget(QWidget *parent = 0);
 
@@ -31,6 +43,7 @@ public slots:
     void Go();
     void Random();
     void AddNode(QString parentName,QString name,int cost);
+    void ShowSolution(Solution<GameState> solution);
 
 };
 
