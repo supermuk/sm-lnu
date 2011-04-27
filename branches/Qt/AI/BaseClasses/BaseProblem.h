@@ -4,7 +4,7 @@
 #include "BaseClasses/BaseAction.h"
 #include "DataStructures/BaseQueue.h"
 #include "DataStructures/StateTable.h"
-#include "DataStructures/FifoQueue.h"
+//#include "DataStructures/FifoQueue.h"
 #include "DataStructures/List.h"
 
 template<class TState>

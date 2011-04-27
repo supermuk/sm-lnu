@@ -3,6 +3,7 @@
 
 #include "BaseState.h"
 #include "BaseProblem.h"
+#include "BaseAction.h"
 
 template<class TState>
     class BaseNode
@@ -24,41 +25,13 @@ template<class TState>
 
         const BaseNode<TState>* ChildNode(BaseProblem<TState>* problem, BaseAction<TState>* action) const;
 
-        BaseNode<TState>& operator=(const BaseNode& node);
-        const BaseNode<TState>& operator=(const BaseNode& node) const;
-
     };
 
 template<class TState>
-    BaseNode<TState>::BaseNode(const BaseNode<TState> &node)
+    BaseNode<TState>::~BaseNode()
     {
-        mPathCost = node.mPathCost;
-        mState = node.mState;
-        mParent = node.mParent;
+        //delete mState;
     }
-template<class TState>
-    BaseNode<TState>& BaseNode<TState>::operator=( const BaseNode<TState> &node)
-    {
-        mPathCost = node.mPathCost;
-        mState = node.mState;
-        mParent = node.mParent;
-        return *this;
-    }
-
-template<class TState>
-    const BaseNode<TState>& BaseNode<TState>::operator=( const BaseNode<TState> &node) const
-    {
-        mPathCost = node.mPathCost;
-        mState = node.mState;
-        mParent = node.mParent;
-        return *this;
-    }
-
-template<class TState>
-        BaseNode<TState>::~BaseNode()
-        {
-
-        }
 
 template<class TState>
     BaseNode<TState>::BaseNode(const BaseNode<TState>* parent, const TState* state, int pathCost)

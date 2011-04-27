@@ -2,7 +2,7 @@
 #define ASTARSEARCH_H
 
 #include "BaseSearch.h"
-#include "DataStructures/NodePriorityQueue.h"
+#include "DataStructures/PriorityQueue.h"
 
 template<class TState>
     class AStarSearch: public BaseSearch<TState>
@@ -21,7 +21,7 @@ template<class TState>
             :BaseSearch<TState>(problem)
         {
             mHeuristicFuncPtr = heuristicFuncPtr;
-            this->mFrontier = new NodePriorityQueue<TState>();
+            this->mFrontier = new NodeQueue<TState>(Priority);
         }
     };
 

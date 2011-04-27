@@ -18,6 +18,7 @@
 #include "GameWidget.h"
 #include "SearchAlgos/BaseSearch.h"
 #include "SearchAlgos/BreadthFirstSearch.h"
+#include "SearchAlgos/DepthFirstSearch.h"
 #include "SearchAlgos/UniformCostSearch.h"
 #include "SearchAlgos/AStarSearch.h"
 #include "Solution.h"

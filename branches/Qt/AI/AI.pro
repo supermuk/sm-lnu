@@ -7,10 +7,6 @@ SOURCES += \
     GameWidget.cpp
 
 HEADERS += \
-    DataStructures/List.h \
-    DataStructures/List.h \
-    DataStructures/FifoQueue.h \
-    DataStructures/BaseQueue.h \
     BaseClasses/BaseState.h \
     BaseClasses/BaseProblem.h \
     BaseClasses/BaseNode.h \
@@ -21,13 +17,17 @@ HEADERS += \
     GameState.h \
     GameProblem.h \
     GameAction.h \
-    DataStructures/NodeQueue.h \
     GameWidget.h \
-    DataStructures/StateTable.h \
-    DataStructures/NodePriorityQueue.h \
-    DataStructures/BaseNodeQueue.h \
     Solution.h \
     SearchAlgos/UniformCostSearch.h \
     SearchAlgos/BaseSearch.h \
     SearchAlgos/BreadthFirstSearch.h \
-    SearchAlgos/AStarSearch.h
+    SearchAlgos/AStarSearch.h \
+    DataStructures/LifoQueue.h \
+    DataStructures/FifoQueue.h \
+    DataStructures/PriorityQueue.h \
+    DataStructures/NodeQueue.h \
+    DataStructures/List.h \
+    DataStructures/BaseQueue.h \
+    DataStructures/StateTable.h \
+    SearchAlgos/DepthFirstSearch.h

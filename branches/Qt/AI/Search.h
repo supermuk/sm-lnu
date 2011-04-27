@@ -7,17 +7,16 @@
 #include "DataStructures/BaseQueue.h"
 #include "DataStructures/StateTable.h"
 #include "DataStructures/FifoQueue.h"
+#include "DataStructures/LifoQueue.h"
 #include "DataStructures/NodeQueue.h"
-#include "DataStructures/BaseNodeQueue.h"
-#include "DataStructures/NodePriorityQueue.h"
-#include "DataStructures/NodeQueue.h"
+#include "DataStructures/PriorityQueue.h"
 
 template<class TState>
     class Search
     {
 
     public:
-        BaseNodeQueue<TState> *frontier;
+        NodeQueue<TState> *frontier;
         StateTable<TState> *explored;
 
         Search();
@@ -31,7 +30,7 @@ template<class TState>
 template<class TState>
     Search<TState>::Search()
     {
-        frontier = new NodeQueue<TState>();
+        frontier = new FifoQueue<TState>();
         explored = new StateTable<TState>();
     }
 
@@ -90,7 +89,7 @@ template<class TState>
     {
         BaseNode<TState> node(NULL, problem->GetInitState(), 0);
 
-        frontier = new NodePriorityQueue<TState>();
+        frontier = new PriorityQueue<TState>();
         frontier->Add(node);
 
         while(!frontier->IsEmpty())

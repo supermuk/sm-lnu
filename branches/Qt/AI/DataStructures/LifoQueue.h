@@ -1,11 +1,11 @@
-#ifndef FIFOQUEUE_H
-#define FIFOQUEUE_H
+#ifndef LIFOQUEUE_H
+#define LIFOQUEUE_H
 
 #include <QQueue>
 #include "BaseQueue.h"
 
 template<class T>
-    class FifoQueue: public BaseQueue<T>
+    class LifoQueue: public BaseQueue<T>
     {
     private:
         QQueue<T> mNodes;
@@ -19,35 +19,35 @@ template<class T>
     };
 
 template<class T>
-    void FifoQueue<T>::Add(T node, int priority)
+    void LifoQueue<T>::Add(T node, int priority)
     {
         mNodes.push_back(node);
     }
 
 template<class T>
-    T FifoQueue<T>::Pop()
+    T LifoQueue<T>::Pop()
     {
-        T item = mNodes.last();
-        mNodes.pop_back();
+        T item = mNodes.first();
+        mNodes.pop_front();
         return item;
     }
 
 template<class T>
-    void FifoQueue<T>::Update(T item, int priority)
+    void LifoQueue<T>::Update(T item, int priority)
     {
 
     }
 
 template<class T>
-    int FifoQueue<T>::Count() const
+    int LifoQueue<T>::Count() const
     {
         return mNodes.count();
     }
 
 template<class T>
-    bool FifoQueue<T>::IsEmpty() const
+    bool LifoQueue<T>::IsEmpty() const
     {
         return mNodes.empty();
     }
 
-#endif // FIFOQUEUE_H
+#endif // LIFOQUEUE_H
