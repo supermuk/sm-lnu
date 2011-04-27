@@ -4,7 +4,6 @@
 #include "BaseClasses/BaseAction.h"
 #include "DataStructures/BaseQueue.h"
 #include "DataStructures/StateTable.h"
-//#include "DataStructures/FifoQueue.h"
 #include "DataStructures/List.h"
 
 template<class TState>
@@ -22,7 +21,6 @@ template<class TState>
         int StepCost(const TState* state, const BaseAction<TState>* action) const;
         virtual List<BaseAction<TState>*> GetActions(const TState* state) const = 0;
         virtual TState* Result(const TState* state, const BaseAction<TState>* action) = 0;
-        virtual QString GetStateName(const TState* state) = 0;
     };
 
 template<class TState>

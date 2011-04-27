@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QTextEdit>
 #include <QTime>
+#include <QListWidget>
 
 #include <algorithm>
 #include "Search.h"
@@ -30,7 +31,7 @@ private:
     int SolutionMaxLength;
     QPushButton *mGoButton;
     QPushButton *mRandomButton;
-    QTreeWidget *mTree;
+    QListWidget *mList;
     GameWidget *mGameWidget;
     QSpinBox *mSizeSpinBox;
     QComboBox *mAlgoComboBox;
@@ -44,7 +45,6 @@ signals:
 public slots:
     void Go();
     void Random();
-    void AddNode(QString parentName,QString name,int cost);
     void ShowSolution(Solution<GameState> solution);
 
 };

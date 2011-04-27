@@ -135,7 +135,7 @@ int GameState::GetHash()const
     {
         for(int j = 0; j < mSize; j++)
         {
-            hash += (mField[i][j] + 1) * tmp;
+            hash += mField[i][j] * tmp;
             tmp*= 10;
         }
     }

@@ -7,12 +7,9 @@ Widget::Widget(QWidget *parent) :
 
     QHBoxLayout *hbox = new QHBoxLayout();
 
-    mTree = new QTreeWidget();
+    mList = new QListWidget();
 
-    mTree->setColumnCount(2);
-    mTree->setColumnWidth(0, 200);
-
-    hbox->addWidget(mTree);
+    hbox->addWidget(mList);
 
     QVBoxLayout *vbox = new QVBoxLayout();
 
@@ -52,7 +49,7 @@ Widget::Widget(QWidget *parent) :
 
     connect(mGoButton, SIGNAL(clicked()), this, SLOT(Go()));
     connect(mRandomButton, SIGNAL(clicked()), this, SLOT(Random()));
-    connect(mTree, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), mGameWidget, SLOT(SetGame(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(mList, SIGNAL(currentTextChanged(QString)), mGameWidget, SLOT(SetGame(QString)));
     connect(mSizeSpinBox, SIGNAL(valueChanged(int)), mGameWidget, SLOT(CreateGame(int)));
 }
 
@@ -88,33 +85,16 @@ void Widget::Go()
     ShowSolution(result);
 }
 
-void Widget::AddNode(QString parentName, QString name, int cost)
-{
-    QStringList list;
-
-    list << name << QString::number(cost);
-
-    if(parentName == QString())
-    {
-        mTree->addTopLevelItem(new QTreeWidgetItem(list));
-    }
-    else
-    {
-        mTree->findItems(parentName, Qt::MatchExactly | Qt::MatchRecursive).first()->addChild(new QTreeWidgetItem(list));
-    }
-}
-
 void Widget::Random()
 {
     QList<char> items;
 
     int size = mSizeSpinBox->value();
 
-    for(int i = 1; i < size * size; ++i)
+    for(int i = 0; i < size * size; ++i)
     {
-        items.push_back(i > 9 ? i + 55 : i + 48);
+        items.push_back(GameWidget::ToChar(i));
     }
-    items.push_back(' ');
 
     QString stateName;
 
@@ -128,10 +108,7 @@ void Widget::Random()
 
 void Widget::ShowSolution(Solution<GameState> solution)
 {
-    while(mTree->topLevelItemCount() != 0)
-    {
-        delete mTree->takeTopLevelItem(0);
-    }
+    mList->clear();
 
     mStatLineEdit->insertPlainText("\r\nAlgo = " + mAlgoComboBox->currentText() + "\r\n");
     mStatLineEdit->insertPlainText("Time = " + QString::number(solution.RunTime) + "ms\r\n");
@@ -140,14 +117,18 @@ void Widget::ShowSolution(Solution<GameState> solution)
 
     if(solution.IsFailure)
     {
-        mStatLineEdit->insertPlainText("No Solution\r\n");
+        mList->addItem("No Solution");
     }
     else
     {
-        for(int i = 0; i < solution.States.count() && i < SolutionMaxLength; ++i)
+        for(int i = 0; i < solution.States.count(); ++i)
         {
             GameState state = solution.States.at(i);
-            AddNode(QString(),state.GetStateName(), i);
+            mList->addItem(state.GetStateName());
+        }
+        if(solution.SolutionLength >= Solution::MAX_SOLUTION_LENGTH)
+        {
+            mList->addItem("Solution contains more then " + QString::number(Solution::MAX_SOLUTION_LENGTH) + " states.");
         }
     }
 }
