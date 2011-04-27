@@ -35,11 +35,6 @@ GameState* GameProblem::Result(const GameState* state, const BaseAction<GameStat
     return action->Do(state);
 }
 
-QString GameProblem::GetStateName(const GameState *state)
-{
-    return state->GetStateName();
-}
-
 int GameProblem::ManhattanDistance(const BaseNode<GameState> *node)
 {
     const GameState* state = node->GetState();

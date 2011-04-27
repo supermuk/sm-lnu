@@ -58,12 +58,16 @@ template<class TState>
         s.PathCost = node->GetPathCost();
 
         int i = 0;
-        while(node != NULL &&  i < 1000)
+
+        while(node != NULL &&  i < Solution::MAX_SOLUTION_LENGTH)
         {
             s.States.append(*(node->GetState()));
             node = node->GetParent();
-
+            i++;
         }
+
+        s.SolutionLength = i;
+
         return s;
     }
 
@@ -116,7 +120,7 @@ template<class TState>
                 }
             }
 
-            delete node;
+            //delete node;
         }
 
         return GetFailure();

@@ -14,20 +14,22 @@ class GameWidget : public QWidget
     Q_OBJECT
 private:
     const static int WIDGET_SIZE = 500;
-    int mSize;
-    QTableWidget *table;
-    GameState *mState;
 
+    QTableWidget *mTable;
+    GameState *mState;
 
     void FillTable();
 public:
     GameWidget(int size, QWidget *parent = 0);
-    void SetGame(QString stateName);
     GameState* GetState();
+
+    char static ToInt(char c);
+    char static ToChar(char i);
+
 signals:
 
 public slots:
-    void SetGame(QTreeWidgetItem* item, QTreeWidgetItem*);
+    void SetGame(QString stateName);
     void Move();
     void CreateGame(int size);
 };

@@ -24,7 +24,6 @@ template<class TState>
         const BaseNode<TState>* GetParent() const;
 
         const BaseNode<TState>* ChildNode(BaseProblem<TState>* problem, BaseAction<TState>* action) const;
-
     };
 
 template<class TState>

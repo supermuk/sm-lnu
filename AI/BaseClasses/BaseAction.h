@@ -8,7 +8,6 @@ template<class TState>
     {
     public:
         virtual TState* Do(const TState* state) const = 0;
-
     };
 
 #endif // BASEACTION_H

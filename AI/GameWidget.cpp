@@ -7,74 +7,50 @@ GameWidget::GameWidget(int size, QWidget *parent) :
 
     setFixedSize(WIDGET_SIZE, WIDGET_SIZE);
 
-    mSize = size;
-
-    table = new QTableWidget(this);
+    mTable = new QTableWidget(this);
     CreateGame(size);
 
-    table->horizontalHeader()->setVisible(false);
-    table->verticalHeader()->setVisible(false);
+    mTable->horizontalHeader()->setVisible(false);
+    mTable->verticalHeader()->setVisible(false);
+    mTable->setFixedSize(WIDGET_SIZE * 1.1 , WIDGET_SIZE * 1.1 );
+    mTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-    connect(table, SIGNAL(itemSelectionChanged()), this, SLOT(Move()));
+    connect(mTable, SIGNAL(itemSelectionChanged()), this, SLOT(Move()));
 }
 
 void GameWidget::CreateGame(int size)
 {
-    mSize = size;
-
     if(mState != NULL)
     {
         delete mState;
     }
-
     mState = new GameState(size);
 
-    table->setFixedSize(WIDGET_SIZE * 1.1 , WIDGET_SIZE * 1.1 );
-    table->setRowCount(size);
-    table->setColumnCount(size);
-    table->setSelectionMode(QAbstractItemView::SingleSelection);
+    mTable->setRowCount(size);
+    mTable->setColumnCount(size);
 
     int cellSize = WIDGET_SIZE / size;
 
     for(int i = 0; i < size; ++i)
     {
-        table->setRowHeight(i, cellSize);
-        table->setColumnWidth(i, cellSize);
+        mTable->setRowHeight(i, cellSize);
+        mTable->setColumnWidth(i, cellSize);
     }
 
     FillTable();
 }
 
-void GameWidget::SetGame(QTreeWidgetItem* item, QTreeWidgetItem*)
-{
-    QString stateName = item->text(0);
-
-    SetGame(stateName);
-}
 
 void GameWidget::SetGame(QString stateName)
 {
-    mSize = sqrt((float)stateName.length());
+    CreateGame(sqrt((float)stateName.length()));
 
-    CreateGame(mSize);
-
-    for(int i = 0; i < mSize; ++i)
+    for(int i = 0; i < mState->GetSize(); ++i)
     {
-        for(int j = 0; j < mSize; ++j)
+        for(int j = 0; j < mState->GetSize(); ++j)
         {
-            char val = stateName[j + mSize * i].toAscii();
-            if(val == ' ')
-            {
-                val = 0;
-            }
-            else
-            {
-                val = val > 64 ? val - 55 : val - 48;
-            }
-
-            mState->SetItem(i, j, val);
+            mState->SetItem(i, j, ToInt(stateName[j + mState->GetSize() * i].toAscii()));
         }
     }
 
@@ -83,34 +59,43 @@ void GameWidget::SetGame(QString stateName)
 
 void GameWidget::FillTable()
 {
-    for(int i = 0; i < mSize; ++i)
+    for(int i = 0; i < mState->GetSize(); ++i)
     {
-        for(int j = 0; j < mSize; ++j)
+        for(int j = 0; j < mState->GetSize(); ++j)
         {
             QTableWidgetItem *cell = new QTableWidgetItem();
-
-            char val = mState->GetItem(i, j);
-            if(val == 0)
-            {
-                val = ' ';
-            }
-            else
-            {
-                val = val > 9 ? val + 55 : val + 48;
-            }
-
-            cell->setText(QString(val));
+            cell->setText(QString(ToChar(mState->GetItem(i, j))));
             cell->setTextAlignment(Qt::AlignCenter);
-            table->setItem(i, j, cell);
+            mTable->setItem(i, j, cell);
         }
     }
 }
 
+char GameWidget::ToChar(char i)
+{
+    if(i == 0)
+    {
+        return ' ';
+    }
+    return i > 9 ? i + 55 : i + 48;
+}
+
+char GameWidget::ToInt(char c)
+{
+    if(c == ' ')
+    {
+        return 0;
+    }
+    return c > 64 ? c - 55 : c - 48;
+}
+
 void GameWidget::Move()
 {
-    int row = table->selectedItems().first()->row();
-    int column = table->selectedItems().first()->column();
+    int row = mTable->selectedItems().first()->row();
+    int column = mTable->selectedItems().first()->column();
+
     Position p = mState->GetEmptyPosition();
+
     int expr = (row - p.Row)*(row - p.Row) + (column - p.Column)*(column - p.Column);
 
     if(expr == 1)
