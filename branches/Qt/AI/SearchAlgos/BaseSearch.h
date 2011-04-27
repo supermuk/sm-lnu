@@ -59,7 +59,7 @@ template<class TState>
 
         int i = 0;
 
-        while(node != NULL &&  i < Solution::MAX_SOLUTION_LENGTH)
+        while(node != NULL &&  i < s.MAX_SOLUTION_LENGTH)
         {
             s.States.append(*(node->GetState()));
             node = node->GetParent();
@@ -102,7 +102,6 @@ template<class TState>
             for(int i = 0; i < actions.Size(); ++i)
             {
                 const BaseNode<TState>* child = node->ChildNode(mProblem, actions[i]);
-                delete actions[i];
 
                 bool frontierContains = mFrontier->Contains(child->GetState());
 
@@ -119,8 +118,6 @@ template<class TState>
                     mFrontier->Update(child, F(child));
                 }
             }
-
-            //delete node;
         }
 
         return GetFailure();

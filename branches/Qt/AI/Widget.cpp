@@ -1,7 +1,6 @@
 #include "Widget.h"
 
-Widget::Widget(QWidget *parent) :
-    QWidget(parent)
+Widget::Widget(QWidget *parent) : QWidget(parent)
 {
     SolutionMaxLength = 1000;
 
@@ -110,14 +109,16 @@ void Widget::ShowSolution(Solution<GameState> solution)
 {
     mList->clear();
 
-    mStatLineEdit->insertPlainText("\r\nAlgo = " + mAlgoComboBox->currentText() + "\r\n");
-    mStatLineEdit->insertPlainText("Time = " + QString::number(solution.RunTime) + "ms\r\n");
-    mStatLineEdit->insertPlainText("Max node queue size = " + QString::number(solution.MaxQueueSize) + "\r\n");
-    mStatLineEdit->insertPlainText("Explored queue size = " + QString::number(solution.ExploredNodesCount) + "\r\n");
+    QString log;
+    log += "\r\nAlgo = " + mAlgoComboBox->currentText() + "\r\n";
+    log +="Time = " + QString::number(solution.RunTime) + "ms\r\n";
+    log += "Max node queue size = " + QString::number(solution.MaxQueueSize) + "\r\n";
+    log += "Explored queue size = " + QString::number(solution.ExploredNodesCount) + "\r\n";
 
     if(solution.IsFailure)
     {
         mList->addItem("No Solution");
+        log += "There is no Solution\r\n";
     }
     else
     {
@@ -126,9 +127,16 @@ void Widget::ShowSolution(Solution<GameState> solution)
             GameState state = solution.States.at(i);
             mList->addItem(state.GetStateName());
         }
-        if(solution.SolutionLength >= Solution::MAX_SOLUTION_LENGTH)
+        if(solution.SolutionLength >= solution.MAX_SOLUTION_LENGTH)
         {
-            mList->addItem("Solution contains more then " + QString::number(Solution::MAX_SOLUTION_LENGTH) + " states.");
+            mList->addItem("Solution contains more then " + QString::number(solution.MAX_SOLUTION_LENGTH) + " states.");
+            log += "Solution length > " + QString::number(solution.SolutionLength) + "\r\n";
+        }
+        else
+        {
+            log += "Solution length = " + QString::number(solution.SolutionLength) + "\r\n";
         }
     }
+
+    mStatLineEdit->setText(log + mStatLineEdit->toPlainText());
 }
