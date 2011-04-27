@@ -2,7 +2,7 @@
 #define UNIFORMCOSTSEARCH_H
 
 #include "BaseSearch.h"
-#include "DataStructures/NodePriorityQueue.h"
+#include "DataStructures/PriorityQueue.h"
 
 template<class TState>
     class UniformCostSearch: public BaseSearch<TState>
@@ -16,7 +16,7 @@ template<class TState>
         UniformCostSearch(BaseProblem<TState>* problem)
             :BaseSearch<TState>(problem)
         {
-            this->mFrontier = new NodePriorityQueue<TState>();
+            this->mFrontier = new NodeQueue<TState>(Priority);
         }
     };
 

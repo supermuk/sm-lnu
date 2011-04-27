@@ -9,7 +9,7 @@ template<class TState>
     class StateTable
     {
     private:
-        QMultiHash<int,const TState*> mHash;
+        QMultiHash<int, const TState*> mHash;
     public:
         void Remove(const TState* item);
         void Add(const TState* item);
@@ -24,17 +24,17 @@ template<class TState>
     void StateTable<TState>::Remove(const TState* item)
     {
         int key = item->GetHash();
-        mHash.remove(key, item);
-        /*
-        QHash<int, T>::const_iterator iter = mSet.find(key, item);
+        //mHash.remove(key, item);
 
-        while (iter != mSet.end() && iter.value() == item)
+        typename QHash<int, const TState*>::iterator iter = mHash.find(key, item);
+
+        while (iter != mHash.end() && !(*iter.value() == *item))
         {
             ++iter;
         }
 
-        mSet.erase(iter);
-        */
+        mHash.erase(iter);
+
     }
 
 template<class TState>

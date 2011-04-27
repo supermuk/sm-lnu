@@ -3,7 +3,7 @@
 
 #include "Solution.h"
 #include "BaseClasses/BaseProblem.h"
-#include "DataStructures/BaseNodeQueue.h"
+#include "DataStructures/NodeQueue.h"
 #include "DataStructures/StateTable.h"
 #include "QTime"
 
@@ -12,7 +12,7 @@ template<class TState>
     {
     protected:
         BaseProblem<TState> *mProblem;
-        BaseNodeQueue<TState> *mFrontier;
+        NodeQueue<TState> *mFrontier;
         StateTable<TState> *mExplored;
 
         int virtual F(const BaseNode<TState>* node) = 0;
@@ -57,7 +57,8 @@ template<class TState>
         s.IsFailure = false;
         s.PathCost = node->GetPathCost();
 
-        while(node != NULL)
+        int i = 0;
+        while(node != NULL &&  i < 1000)
         {
             s.States.append(*(node->GetState()));
             node = node->GetParent();
@@ -93,6 +94,7 @@ template<class TState>
             mExplored->Add(node->GetState());
 
             List<BaseAction<TState>*> actions = mProblem->GetActions(node->GetState());
+
             for(int i = 0; i < actions.Size(); ++i)
             {
                 const BaseNode<TState>* child = node->ChildNode(mProblem, actions[i]);
@@ -110,11 +112,14 @@ template<class TState>
                 }
                 else if(frontierContains)
                 {
-                    mFrontier->Update(child);
+                    mFrontier->Update(child, F(child));
                 }
             }
+
+            delete node;
         }
 
         return GetFailure();
     }
+
 #endif // BASESEARCH_H

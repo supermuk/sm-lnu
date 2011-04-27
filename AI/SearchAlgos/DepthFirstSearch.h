@@ -1,11 +1,11 @@
-#ifndef BREADTHFIRSTSEARCH_H
-#define BREADTHFIRSTSEARCH_H
+#ifndef DEPTHFIRSTSEARCH_H
+#define DEPTHFIRSTSEARCH_H
 
 #include "BaseSearch.h"
 #include "DataStructures/NodeQueue.h"
 
 template<class TState>
-    class BreadthFirstSearch: public BaseSearch<TState>
+    class DepthFirstSearch: public BaseSearch<TState>
     {
     protected:
         int F(const BaseNode<TState>* node)
@@ -13,12 +13,11 @@ template<class TState>
             return 0;
         }
     public:
-        BreadthFirstSearch(BaseProblem<TState>* problem)
+        DepthFirstSearch(BaseProblem<TState>* problem)
             :BaseSearch<TState>(problem)
         {
-            this->mFrontier = new NodeQueue<TState>(Lifo);
+            this->mFrontier = new NodeQueue<TState>(Fifo);
         }
     };
 
-
-#endif // BREADTHFIRSTSEARCH_H
+#endif // DEPTHFIRSTSEARCH_H

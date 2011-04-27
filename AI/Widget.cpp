@@ -3,7 +3,7 @@
 Widget::Widget(QWidget *parent) :
     QWidget(parent)
 {
-    SolutionMaxLength = 50000;
+    SolutionMaxLength = 1000;
 
     QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -23,6 +23,7 @@ Widget::Widget(QWidget *parent) :
 
     mAlgoComboBox = new QComboBox();
     mAlgoComboBox->addItem("BFS");
+    mAlgoComboBox->addItem("DFS");
     mAlgoComboBox->addItem("UCS");
     mAlgoComboBox->addItem("A* Manhattan");
     mAlgoComboBox->addItem( "A* Hamming");
@@ -70,12 +71,15 @@ void Widget::Go()
          s = new BreadthFirstSearch<GameState>(problem);
         break;
     case 1:
-        s = new UniformCostSearch<GameState>(problem);
+         s = new DepthFirstSearch<GameState>(problem);
         break;
     case 2:
-        s = new AStarSearch<GameState>(problem, &GameProblem::ManhattanDistance);
+        s = new UniformCostSearch<GameState>(problem);
         break;
     case 3:
+        s = new AStarSearch<GameState>(problem, &GameProblem::ManhattanDistance);
+        break;
+    case 4:
         s = new AStarSearch<GameState>(problem, &GameProblem::HammingDistance);
         break;
     }
@@ -128,7 +132,6 @@ void Widget::ShowSolution(Solution<GameState> solution)
     {
         delete mTree->takeTopLevelItem(0);
     }
-
 
     mStatLineEdit->insertPlainText("\r\nAlgo = " + mAlgoComboBox->currentText() + "\r\n");
     mStatLineEdit->insertPlainText("Time = " + QString::number(solution.RunTime) + "ms\r\n");
