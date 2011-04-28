@@ -6,6 +6,9 @@
 #include "DataStructures/StateTable.h"
 #include "DataStructures/List.h"
 
+/**
+  Abstract class.
+  */
 template<class TState>
     class BaseProblem
     {

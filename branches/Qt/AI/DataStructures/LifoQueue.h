@@ -27,8 +27,8 @@ template<class T>
 template<class T>
     T LifoQueue<T>::Pop()
     {
-        T item = mNodes.first();
-        mNodes.pop_front();
+        T item = mNodes.last();
+        mNodes.pop_back();
         return item;
     }
 
