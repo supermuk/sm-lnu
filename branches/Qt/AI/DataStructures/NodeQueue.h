@@ -89,6 +89,13 @@ template<class TState>
     void NodeQueue<TState>::Update(const BaseNode<TState> *node, int priority)
     {
         mNodes->Update(node, priority);
+
+        int count = mNodes->Count();
+
+        if(count > MaxCount)
+        {
+            MaxCount = count;
+        }
     }
 
 template<class TState>
@@ -108,4 +115,5 @@ template<class TState>
     {
         return mNodes->Count();
     }
+
 #endif // NodeQueue_H

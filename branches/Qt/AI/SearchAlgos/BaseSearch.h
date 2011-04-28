@@ -7,13 +7,23 @@
 #include "DataStructures/StateTable.h"
 #include "QTime"
 
+enum Algos
+{
+    BFS = 0,
+    DFS = 1,
+    UCS = 2,
+    AStarManhattan = 3,
+    AStarHemming = 4
+};
+
 template<class TState>
     class BaseSearch
     {
     protected:
         BaseProblem<TState> *mProblem;
         NodeQueue<TState> *mFrontier;
-        StateTable<TState> *mExplored;
+        NodeQueue<TState> *mExplored;
+        //StateTable<TState> *mExplored;
 
         int virtual F(const BaseNode<TState>* node) = 0;
 
@@ -22,6 +32,7 @@ template<class TState>
         Solution<TState> SearchRun();
     public:
         BaseSearch(BaseProblem<TState>* problem);
+        ~BaseSearch();
 
         Solution<TState> Run();
 
@@ -31,7 +42,16 @@ template<class TState>
     BaseSearch<TState>::BaseSearch(BaseProblem<TState> *problem)
     {
         mProblem = problem;
-        mExplored = new StateTable<TState>();
+        //mExplored = new StateTable<TState>();
+        mExplored = new NodeQueue<TState>(Fifo);
+    }
+
+template<class TState>
+    BaseSearch<TState>::~BaseSearch()
+    {
+        //delete mProblem;
+        delete mFrontier;
+        delete mExplored;
     }
 
 template<class TState>
@@ -76,46 +96,52 @@ template<class TState>
     {
         Solution<TState> s;
         s.IsFailure = true;
+        s.SolutionLength = -1;
         return s;
     }
 
 template<class TState>
     Solution<TState> BaseSearch<TState>::SearchRun()
     {
-        const BaseNode<TState>* node = new BaseNode<TState>(NULL, mProblem->GetInitState(), 0);
+        const BaseNode<TState>* node = new BaseNode<TState>(NULL, new TState(mProblem->GetInitState()), 0);
 
         mFrontier->Add(node, F(node));
 
         while(!mFrontier->IsEmpty())
         {
             node = mFrontier->Pop();
+            mExplored->Add(node, NULL);
 
             if(mProblem->IsGoalState(node->GetState()))
             {
                 return GetSolution(node);
             }
 
-            mExplored->Add(node->GetState());
-
             List<BaseAction<TState>*> actions = mProblem->GetActions(node->GetState());
 
             for(int i = 0; i < actions.Size(); ++i)
             {
                 const BaseNode<TState>* child = node->ChildNode(mProblem, actions[i]);
+                delete actions[i];
 
                 bool frontierContains = mFrontier->Contains(child->GetState());
 
                 if(!mExplored->Contains(child->GetState()) && !frontierContains)
                 {
+                    mFrontier->Add(child, F(child));
+
                     if(mProblem->IsGoalState(child->GetState()))
                     {
                         return GetSolution(child);
                     }
-                    mFrontier->Add(child, F(child));
                 }
                 else if(frontierContains)
                 {
                     mFrontier->Update(child, F(child));
+                }
+                else
+                {
+                    delete child;
                 }
             }
         }

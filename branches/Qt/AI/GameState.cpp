@@ -22,6 +22,11 @@ GameState::GameState(int size)
 
 GameState::GameState(const GameState &state)
 {
+    *this = state;
+}
+
+GameState& GameState::operator =(const GameState &state)
+{
     mSize = state.mSize;
 
     mField = new char*[mSize];
@@ -35,16 +40,23 @@ GameState::GameState(const GameState &state)
             mField[i][j] = state.mField[i][j];
         }
     }
+
+    return *this;
 }
 
 GameState::~GameState()
 {
     for(int i = 0; i < mSize; ++i)
     {
-        delete[] mField[i];
+        if(mField[i] != NULL)
+        {
+            delete[] mField[i];
+        }
     }
-
-    delete[] mField;
+    if(mField != NULL)
+    {
+        delete[] mField;
+    }
 }
 
 bool GameState::operator ==(const GameState& state)const

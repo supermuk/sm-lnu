@@ -8,7 +8,6 @@ template<class T>
     class PriorityQueue: public BaseQueue<T>
     {
     private:
-        int mUniqueCount;
         QMultiMap<int, T> mNodes;
     public:
         void Add(T node, int priority);
@@ -22,16 +21,12 @@ template<class T>
 template<class T>
     void PriorityQueue<T>::Add(T node, int priority)
     {
-        mUniqueCount++;
-
         mNodes.insertMulti(priority, node);
     }
 
 template<class T>
     T PriorityQueue<T>::Pop()
     {
-        mUniqueCount--;
-
         typename QMap<int, T>::iterator iter = mNodes.begin();
 
         T item = iter.value();
@@ -49,13 +44,13 @@ template<class T>
 template<class T>
     int PriorityQueue<T>::Count() const
     {
-        return mNodes.count();//mUniqueCount;
+        return mNodes.count();
     }
 
 template<class T>
     bool PriorityQueue<T>::IsEmpty() const
     {
-        return mNodes.empty();//mUniqueCount == 0;
+        return mNodes.empty();
     }
 
 #endif // PRIORITYQUEUE_H

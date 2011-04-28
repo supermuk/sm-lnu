@@ -18,6 +18,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
     QHBoxLayout *hboxBottom = new QHBoxLayout();
 
     mAlgoComboBox = new QComboBox();
+
     mAlgoComboBox->addItem("BFS");
     mAlgoComboBox->addItem("DFS");
     mAlgoComboBox->addItem("UCS");
@@ -28,6 +29,9 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
     mGoButton = new QPushButton("Go");
     hboxBottom->addWidget(mGoButton);
+
+    mGoAll = new QPushButton("Run All Algos");
+    hboxBottom->addWidget(mGoAll);
 
     mRandomButton = new QPushButton("Random");
     hboxBottom->addWidget(mRandomButton);
@@ -44,9 +48,15 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
     hbox->addWidget(mStatLineEdit);
 
-    setLayout(hbox);
+    mStat = new StatWidget();
+    //hbox->addWidget(mStat);
+    QVBoxLayout *vbigbox = new QVBoxLayout();
+    vbigbox->addLayout(hbox);
+    vbigbox->addWidget(mStat);
+    setLayout(vbigbox);
 
     connect(mGoButton, SIGNAL(clicked()), this, SLOT(Go()));
+    connect(mGoAll, SIGNAL(clicked()), this, SLOT(GoAll()));
     connect(mRandomButton, SIGNAL(clicked()), this, SLOT(Random()));
     connect(mList, SIGNAL(currentTextChanged(QString)), mGameWidget, SLOT(SetGame(QString)));
     connect(mSizeSpinBox, SIGNAL(valueChanged(int)), mGameWidget, SLOT(CreateGame(int)));
@@ -59,29 +69,62 @@ void Widget::Go()
     GameState *init = mGameWidget->GetState();
     GameState *goal= new GameState(mSizeSpinBox->value());
 
-    BaseProblem<GameState> *problem = new GameProblem(init, goal);
+    BaseProblem<GameState> *problem = new GameProblem(*init, *goal);
 
     switch(mAlgoComboBox->currentIndex())
     {
-    case 0:
+    case BFS:
          s = new BreadthFirstSearch<GameState>(problem);
         break;
-    case 1:
+    case DFS:
          s = new DepthFirstSearch<GameState>(problem);
         break;
-    case 2:
+    case UCS:
         s = new UniformCostSearch<GameState>(problem);
         break;
-    case 3:
+    case AStarManhattan:
         s = new AStarSearch<GameState>(problem, &GameProblem::ManhattanDistance);
         break;
-    case 4:
+    case AStarHemming:
         s = new AStarSearch<GameState>(problem, &GameProblem::HammingDistance);
         break;
     }
 
     Solution<GameState> result = s->Run();
+
+    //mStat->AddSolution((Algos)mAlgoComboBox->currentIndex(), result);
+
     ShowSolution(result);
+}
+
+void Widget::GoAll()
+{
+    BaseSearch<GameState>* s;
+
+    GameState *init = mGameWidget->GetState();
+    GameState *goal= new GameState(mSizeSpinBox->value());
+
+    BaseProblem<GameState> *problem = new GameProblem(*init, *goal);
+
+    s = new BreadthFirstSearch<GameState>(problem);
+    mStat->AddSolution(BFS, s->Run());
+    delete s;
+
+    s = new DepthFirstSearch<GameState>(problem);
+    mStat->AddSolution(DFS, s->Run());
+    delete s;
+
+    s = new UniformCostSearch<GameState>(problem);
+    mStat->AddSolution(UCS, s->Run());
+    delete s;
+
+    s = new AStarSearch<GameState>(problem, &GameProblem::ManhattanDistance);
+    mStat->AddSolution(AStarManhattan, s->Run());
+    delete s;
+
+    s = new AStarSearch<GameState>(problem, &GameProblem::HammingDistance);
+    mStat->AddSolution(AStarHemming, s->Run());
+    delete s;
 }
 
 void Widget::Random()

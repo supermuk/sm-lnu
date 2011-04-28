@@ -29,7 +29,7 @@ template<class TState>
 template<class TState>
     BaseNode<TState>::~BaseNode()
     {
-        //delete mState;
+        delete mState;
     }
 
 template<class TState>

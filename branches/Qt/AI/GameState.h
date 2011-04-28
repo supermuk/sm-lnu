@@ -27,6 +27,8 @@ public:
 
     bool operator == (const GameState& state) const;
 
+    GameState& operator=(const GameState& state);
+
 };
 
 #endif // GAMESTATE_H

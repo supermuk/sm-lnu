@@ -1,5 +1,5 @@
-#ifndef WIDGET_H
-#define WIDGET_H
+#ifndef STATWIDGET_H
+#define STATWIDGET_H
 
 #include <QWidget>
 #include <QPushButton>
@@ -12,12 +12,12 @@
 #include <QTextEdit>
 #include <QTime>
 #include <QListWidget>
+#include <QCheckBox>
 
 #include <algorithm>
 #include "Search.h"
 #include "GameProblem.h"
 #include "GameWidget.h"
-#include "StatWidget.h"
 #include "SearchAlgos/BaseSearch.h"
 #include "SearchAlgos/BreadthFirstSearch.h"
 #include "SearchAlgos/DepthFirstSearch.h"
@@ -25,32 +25,31 @@
 #include "SearchAlgos/AStarSearch.h"
 #include "Solution.h"
 
-class Widget : public QWidget
+class StatWidget : public QWidget
 {
     Q_OBJECT
 private:
-    int SolutionMaxLength;
     QPushButton *mGoButton;
-    QPushButton *mGoAll;
-    QPushButton *mRandomButton;
-    QListWidget *mList;
-    GameWidget *mGameWidget;
     QSpinBox *mSizeSpinBox;
-    QComboBox *mAlgoComboBox;
+    QTableWidget *mTable;
     QTextEdit *mStatLineEdit;
-    StatWidget *mStat;
+    QCheckBox *mBFS;
+    QCheckBox *mDFS;
+    QCheckBox *mUCS;
+    QCheckBox *mASM;
+    QCheckBox *mASH;
+
+    QCheckBox *mLen;
+    QCheckBox *mMem;
+    QCheckBox *mExp;
+    QCheckBox *mTime;
+
+    QMap<Algos, int> mCounter;
 
 public:
-    explicit Widget(QWidget *parent = 0);
+    explicit StatWidget(QWidget *parent = 0);
 
-signals:
-
-public slots:
-    void GoAll();
-    void Go();
-    void Random();
-    void ShowSolution(Solution<GameState> solution);
+    void AddSolution(Algos algo, Solution<GameState> solution);
 
 };
-
-#endif // WIDGET_H
+#endif // STATWIDGET_H

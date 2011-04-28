@@ -4,7 +4,8 @@ SOURCES += \
     GameState.cpp \
     GameProblem.cpp \
     GameAction.cpp \
-    GameWidget.cpp
+    GameWidget.cpp \
+    StatWidget.cpp
 
 HEADERS += \
     BaseClasses/BaseState.h \
@@ -30,4 +31,5 @@ HEADERS += \
     DataStructures/List.h \
     DataStructures/BaseQueue.h \
     DataStructures/StateTable.h \
-    SearchAlgos/DepthFirstSearch.h
+    SearchAlgos/DepthFirstSearch.h \
+    StatWidget.h

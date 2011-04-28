@@ -10,12 +10,12 @@ template<class TState>
     class BaseProblem
     {
     private:
-        TState* mInitState;
-        TState* mGoalState;
+        TState mInitState;
+        TState mGoalState;
     public:
-        BaseProblem(TState* initState, TState* goalState);
+        BaseProblem(TState initState, TState goalState);
 
-        TState* GetInitState();
+        TState GetInitState();
         bool IsGoalState(const TState* state)const;
 
         int StepCost(const TState* state, const BaseAction<TState>* action) const;
@@ -24,15 +24,13 @@ template<class TState>
     };
 
 template<class TState>
-    BaseProblem<TState>::BaseProblem(TState* initState, TState* goalState)
+    BaseProblem<TState>::BaseProblem(TState initState, TState goalState)
+        :mInitState(initState), mGoalState(goalState)
     {
-        mInitState = initState;
-        mGoalState = goalState;
     }
 
-
 template<class TState>
-    TState* BaseProblem<TState>::GetInitState()
+    TState BaseProblem<TState>::GetInitState()
     {
         return mInitState;
     }
@@ -40,7 +38,7 @@ template<class TState>
 template<class TState>
     bool BaseProblem<TState>::IsGoalState(const TState* state)const
     {
-        return (*state) == (*mGoalState);
+        return (*state) == mGoalState;
     }
 
 template<class TState>
