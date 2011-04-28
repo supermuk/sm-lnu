@@ -13,7 +13,7 @@
 class GameProblem: public BaseProblem<GameState>
 {
 public:
-    GameProblem(GameState* initState, GameState* goalState):BaseProblem<GameState>(initState, goalState){}
+    GameProblem(GameState initState, GameState goalState):BaseProblem<GameState>(initState, goalState){}
 
     List<BaseAction<GameState>*> GetActions(const GameState* state)const;
     GameState* Result(const GameState* state, const BaseAction<GameState>* action);

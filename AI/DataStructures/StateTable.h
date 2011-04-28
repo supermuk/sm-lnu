@@ -73,12 +73,7 @@ template<class TState>
 template<class TState>
     StateTable<TState>::~StateTable()
     {
-        QList<const TState*> list = mHash.values();
 
-        for(int i = 0; i < list.count(); ++i)
-        {
-            delete list.at(i);
-        }
     }
 
 #endif // STATETABLE_H
