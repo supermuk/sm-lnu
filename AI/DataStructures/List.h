@@ -3,6 +3,9 @@
 
 #include <QList>
 
+/**
+  \brief QList wrapper.
+  */
 template<class T>
     class List
     {

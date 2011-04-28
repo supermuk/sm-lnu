@@ -4,16 +4,36 @@
 #include <QQueue>
 #include "BaseQueue.h"
 
+/**
+  \brief FIFO (First In, First Out) Queue. QQueue wrapper.
+  */
 template<class T>
     class FifoQueue: public BaseQueue<T>
     {
     private:
         QQueue<T> mNodes;
     public:
+        /**
+          Adds item to end of queue.
+          \param priority Not used.
+          */
         void Add(T node, int priority);
+        /**
+          Remove first item in queue.
+          \return first item.
+          */
         T Pop();
+        /**
+          Ignored.
+          */
         void Update(T item, int priority);
+        /**
+          \return true - if queue is empty.
+          */
         bool IsEmpty() const;
+        /**
+          \return count of items in queue.
+          */
         int Count() const;
 
     };
@@ -27,8 +47,8 @@ template<class T>
 template<class T>
     T FifoQueue<T>::Pop()
     {
-        T item = mNodes.last();
-        mNodes.pop_back();
+        T item = mNodes.first();
+        mNodes.pop_front();
         return item;
     }
 

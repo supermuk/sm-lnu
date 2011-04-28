@@ -8,26 +8,60 @@
 #include "DataStructures/PriorityQueue.h"
 #include "StateTable.h"
 
-
+/**
+  \brief Node containter.
+  */
 template<class TState>
     class NodeQueue: public BaseQueue<const BaseNode<TState>* >
     {
     protected:
+        /**
+          Container for states pointers.
+          */
         StateTable<TState> mStates;
+        /**
+          Nodes queue. \see FifoQueue LifoQueue PriorityQueue
+          */
         BaseQueue<const BaseNode<TState>* >* mNodes;
 
     public:
+        /**
+          Keeps max queue size.
+          */
         int MaxCount;
+
         NodeQueue(QueueType queue);
+        /**
+          Destructor. Deletes all nodes and free memory.
+          */
         ~NodeQueue();
 
+        /**
+          Addes node to queue and its state to StateTable
+          */
         void Add(const BaseNode<TState>* node, int priority);
+        /**
+          Remove node from queue.
+          \return node
+          */
         const BaseNode<TState>* Pop();
+        /**
+          Inserts node with lower priority to queue.
+          */
         void Update(const BaseNode<TState>* node, int priority);
 
+        /**
+          \return true - if queue is empty.
+          */
         bool IsEmpty() const;
+        /**
+          \return count of items in queue.
+          */
         int Count() const;
 
+        /**
+          Checks if node with specified state exists in queue. \see StateTable::Contain
+          */
         bool Contains(const TState* state);
 
     };

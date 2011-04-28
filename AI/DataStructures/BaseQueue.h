@@ -1,13 +1,10 @@
 #ifndef BASEQUEUE_H
 #define BASEQUEUE_H
 
-enum QueueType
-{
-    Fifo,
-    Lifo,
-    Priority
-};
 
+/**
+  \brief Queue Interface. Abstract class.
+  */
 template<class T>
     class BaseQueue
     {
@@ -18,5 +15,12 @@ template<class T>
         virtual bool IsEmpty() const = 0;
         virtual int Count() const = 0;
     };
+
+enum QueueType
+{
+    Fifo,
+    Lifo,
+    Priority
+};
 
 #endif // BASEQUEUE_H
