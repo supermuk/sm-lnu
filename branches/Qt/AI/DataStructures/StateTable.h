@@ -5,10 +5,16 @@
 #include <QHash>
 #include <QMultiHash>
 
+/**
+  States pointers container. Quickly get state by its hash code.
+  */
 template<class TState>
     class StateTable
     {
     private:
+        /**
+          Key - hash code, value - state pointer.
+          */
         QMultiHash<int, const TState*> mHash;
     public:
         void Remove(const TState* item);

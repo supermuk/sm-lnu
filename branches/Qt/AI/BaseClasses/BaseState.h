@@ -2,7 +2,7 @@
 #define BASESTATE_H
 
 /**
-  \brief State Interface.
+  \brief State Interface. Abstract class.
   */
 class BaseState
 {

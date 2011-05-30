@@ -4,18 +4,38 @@
 #include <QMultiMap>
 #include "BaseQueue.h"
 
+/**
+  \brief Priority Queue. QQueue wrapper.
+  */
 template<class T>
     class PriorityQueue: public BaseQueue<T>
     {
     private:
         QMultiMap<int, T> mNodes;
     public:
+        /**
+          Adds item to the queue due to its priority.
+          \param item priority
+          */
         void Add(T node, int priority);
+        /**
+          Remove item from queue with least priority.
+          \return  item  with least priority.
+          */
         T Pop();
+        /**
+          Adds item to the queue due to its priority. (the same as Add)
+          \param item priority
+          */
         void Update(T item, int priority);
+        /**
+          \return true - if queue is empty.
+          */
         bool IsEmpty() const;
+        /**
+          \return count of items in queue.
+          */
         int Count() const;
-
     };
 
 template<class T>

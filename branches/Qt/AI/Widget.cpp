@@ -50,6 +50,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
     mStat = new StatWidget();
     //hbox->addWidget(mStat);
+
     QVBoxLayout *vbigbox = new QVBoxLayout();
     vbigbox->addLayout(hbox);
     vbigbox->addWidget(mStat);

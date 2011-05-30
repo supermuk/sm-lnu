@@ -15,7 +15,7 @@ GameWidget::GameWidget(int size, QWidget *parent) :
     mTable->setFixedSize(WIDGET_SIZE * 1.1 , WIDGET_SIZE * 1.1 );
     mTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     mTable->setSelectionMode(QAbstractItemView::SingleSelection);
-
+    mTable->setFont(QFont("Arial", 20, 4));
     connect(mTable, SIGNAL(itemSelectionChanged()), this, SLOT(Move()));
 }
 

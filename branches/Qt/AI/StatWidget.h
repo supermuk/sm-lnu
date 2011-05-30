@@ -38,7 +38,7 @@ private:
     QCheckBox *mUCS;
     QCheckBox *mASM;
     QCheckBox *mASH;
-
+    QTextEdit *mText;
     QCheckBox *mLen;
     QCheckBox *mMem;
     QCheckBox *mExp;
