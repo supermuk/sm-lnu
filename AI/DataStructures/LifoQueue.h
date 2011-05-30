@@ -4,18 +4,37 @@
 #include <QQueue>
 #include "BaseQueue.h"
 
+/**
+  \brief LIFO (Last In, First Out) Queue. QQueue wrapper.
+  */
 template<class T>
     class LifoQueue: public BaseQueue<T>
     {
     private:
         QQueue<T> mNodes;
     public:
+        /**
+          Adds item to the beginning of queue.
+          \param priority Not used.
+          */
         void Add(T node, int priority);
+        /**
+          Remove last item in queue.
+          \return last item.
+          */
         T Pop();
+        /**
+          Ignored.
+          */
         void Update(T item, int priority);
+        /**
+          \return true - if queue is empty.
+          */
         bool IsEmpty() const;
+        /**
+          \return count of items in queue.
+          */
         int Count() const;
-
     };
 
 template<class T>

@@ -12,12 +12,15 @@ StatWidget::StatWidget( QWidget *parent) : QWidget(parent)
     mASM = new QCheckBox("A* Manhattan");
     mASH = new QCheckBox("A* Hemming");
 
+    mText = new QTextEdit();
+    hbox->addWidget(mText);
+/*
     hbox->addWidget(mBFS);
     hbox->addWidget(mDFS);
     hbox->addWidget(mUCS);
     hbox->addWidget(mASM);
     hbox->addWidget(mASH);
-
+*/
     vbox->addLayout(hbox);
 
     mTable =  new QTableWidget();
@@ -74,4 +77,14 @@ void StatWidget::AddSolution(Algos algo, Solution<GameState> solution)
     cell->setText(QString::number(solution.RunTime));
     cell->setData(Qt::BackgroundRole, QColor(250, 150, 180));
     mTable->setItem(row, algo * 4 + 3, cell);
+
+    QString log =  QString::number(solution.SolutionLength) + "\t";
+    log += QString::number(solution.MaxQueueSize) + "\t";
+    log += QString::number(solution.ExploredNodesCount) + "\t";
+    log += QString::number(solution.RunTime) + "\t";
+    if(algo == AStarHemming)
+        log+= "\r\n";
+
+    mText->setText( mText->toPlainText() + log);
+
 }

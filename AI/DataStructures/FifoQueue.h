@@ -14,7 +14,7 @@ template<class T>
         QQueue<T> mNodes;
     public:
         /**
-          Adds item to end of queue.
+          Adds item to the end of queue.
           \param priority Not used.
           */
         void Add(T node, int priority);
